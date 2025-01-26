@@ -1,0 +1,76 @@
+
+<%= form_with(model: prescription, local: true) do |form| %>
+  <center><h2 class="">Edit Prescription</h2></center>
+
+  <% if prescription.errors.any? %>
+    <div class="errors">
+      <h2><%= pluralize(prescription.errors.count, "error") %> prohibited this prescription from being saved:</h2>
+      <ul>
+        <% prescription.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <%end%>
+  <%= form.hidden_field :appointment_id, value: prescription.appointment_id %>
+  <%= form.hidden_field :follow_up_id, value: prescription.follow_up_id %>
+
+  <div class="form-group">
+    <%= form.label :medicine, class: 'label' %>
+    <%= form.select :medicine_id, Medicine.where(id: prescription&.medicine&.id).collect { |p| [p.name, p.id] }, { include_blank: 'Select Medicine', selected: prescription&.medicine&.id }, class: 'input-field searchable-select', id: 'medicine_select' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :dosage, class: 'label' %>
+    <%= form.number_field :dosage, class: 'input-field' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :note, class: 'label' %>
+    <%= form.text_field :note, class: 'input-field' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.submit 'Save', class: 'btn btn-primary' %>
+  </div>
+  <center>
+    <%= link_to 'Close', '#', id: "close-popup", class: 'btn btn-followup'%>
+  </center>
+<% end %>
+
+<%= link_to 'Back', root_path, class: 'btn btn-secondary' %>
+
+<script>
+
+  $('#medicine_select').select2({
+    placeholder: "Search Medicine",
+    allowClear: true,
+    ajax: {
+      url: "<%= search_medicines_prescriptions_path %>",  // The route for searching medicines
+      dataType: 'json',
+      delay: 250,  // Delay before the request is sent
+      data: function (params) {
+        return {
+          q: params.term  // Send the search query
+        };
+      },
+      processResults: function (data) {
+        return {
+          results: data.medicines.map(function(medicine) {
+            return {
+              id: medicine.id,
+              text: medicine.name
+            };
+          })
+        };
+      }
+    }
+  });
+  $('.select2-container').css('width', '800px');
+
+  $(document).on('click', '#close-popup', function () {
+    $('#popup-overlay').fadeOut(function () {
+      $(this).remove();
+    });
+  });
+</script>

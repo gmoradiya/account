@@ -1,0 +1,30 @@
+<div class="password-edit-container">
+  <h2>Change Your Password</h2>
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+    <div class="form-group">
+      <%= f.label :current_password, "Current Password" %>
+      <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control", placeholder: "Enter your current password" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :password, "New Password" %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "form-control", placeholder: "Enter your new password" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :password_confirmation, "Confirm New Password" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", placeholder: "Confirm your new password" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.submit "Update Password", class: "btn btn-primary btn-block" %>
+    </div>
+  <% end %>
+
+  <div class="password-edit-footer">
+  <%= render "devise/shared/links" %>
+
+  </div>
+</div>
+
+

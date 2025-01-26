@@ -1,0 +1,112 @@
+
+
+<h1 class="form-title">New Appointment</h1>
+
+<%= form_with(model: @appointment, local: true) do |form| %>
+  <% if @appointment.errors.any? %>
+    <div class="errors">
+      <h2><%= pluralize(@appointment.errors.count, "error") %> prohibited this appointment from being saved:</h2>
+      <ul>
+        <% @appointment.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :appointment_types, class: 'label' %>
+    <%= form.select :appointment_type, Appointment.appointment_types.keys, {selected: @patient.present? ? 'homeopathy' : 'allopathy'}, class: 'input-field appointment-type' %>
+  </div>
+
+  <div class="form-group patient-name" style = "<%= @patient.present? ? 'display: none;' : '' %>" >
+    <%= form.label :patient_name, class: 'label' %>
+    <%= form.text_field :patient_name, class: 'input-field' %>
+  </div>
+
+  <div class="form-group patient-select">
+    <%= form.label :patient_name, class: 'label' %>
+    <%= form.select :patient_id, Patient.where(id: @patient&.id).collect { |p| [p.name, p.id] }, { include_blank: 'Select patient', selected: @patient&.id }, class: 'input-field searchable-select', id: 'patient_select' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :phone_number, class: 'label' %>
+    <%= form.text_field :phone_number, class: 'input-field' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :date, class: 'label' %>
+    <%= form.datetime_field :date, value: DateTime.now, class: 'input-field' %>
+  </div>
+  
+  <div class="form-group">
+    <%= form.submit 'Save', class: 'btn btn-primary' %>
+  </div>
+<% end %>
+
+<%= link_to 'Back', root_path, class: 'btn btn-secondary' %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+  
+    $(document).on('change', '.appointment-type', function (event) {
+      if($(this).val() == 'homeopathy'){
+        $('.patient-name').hide();
+        $('.patient-select').show();
+      }
+      else{
+        $('.patient-name').show();
+        $('.patient-select').hide();
+      }
+    });
+
+    $(document).on('change', '#patient_select', function (event) {
+      const selectedOption = $(this).select2('data')[0];
+      const selectedName = selectedOption ? selectedOption.text : '';
+      $('#appointment_patient_name').val(selectedName);
+
+      $.ajax({
+        url: `/patients/${selectedOption.id}/info`, // The route for the AJAX request
+        method: 'GET',
+        dataType: 'json',
+        success: (data) => {
+          debugger;
+
+          // Render the received data into the #medicines-result div
+          const resultDiv = document.getElementById('appointment_phone_number');
+          $('#appointment_phone_number').val(data.phone_number)
+        },
+        error: (xhr, status, error) => {
+          console.error('Error fetching medicines:', error);
+        },
+      });
+    });
+    $('#patient_select').select2({
+      placeholder: "Search Patient",
+      allowClear: true,
+      ajax: {
+        url: "<%= search_patients_path %>",
+        dataType: 'json',
+        delay: 250,  // Delay before the request is sent
+        data: function (params) {
+          return {
+            q: params.term  // Send the search query
+          };
+        },
+        processResults: function (data) {
+          return {
+            results: data.patients.map(function(patient) {
+              return {
+                id: patient.id,
+                text: patient.name
+              };
+            })
+          };
+        }
+      }
+    });
+    if("<%= @patient.blank? %>" == 'true'){
+      $('.patient-select').hide();
+    }
+  });
+</script>

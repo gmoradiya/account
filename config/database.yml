@@ -1,0 +1,25 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  username: postgres
+  password: postgres
+  host: localhost
+  # If the DB is setup on local machine then use: localhost
+  # adapter: postgresql
+  # encoding: unicode
+  # pool: 11
+development:
+  <<: *default
+  database: follow_up_dev
+test:
+  <<: *default
+  database: follow_up_test
+production:
+  <<: *default
+  database: follow_up_prod
+  username: rails
+  password: dcbabb1a462a071b6869082afcd4ca62
+
+# User: rails
+# * Pass: a757a58011d22b09b9ed2488cbcdba0a

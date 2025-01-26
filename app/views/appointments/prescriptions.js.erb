@@ -1,0 +1,2 @@
+$("#prescriptions").html("<%= escape_javascript(render partial: 'prescriptions/prescriptions', locals: { prescriptions: @prescriptions }) %>");
+$("#modal").modal('show');

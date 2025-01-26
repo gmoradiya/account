@@ -1,0 +1,156 @@
+
+
+<form>
+  <center> <h2> Add Signature </h2> </center>
+  <div class="canvas-container">
+    <canvas id="signatureCanvas" width="300" height="200" style="border: 1px solid black;"></canvas>
+  </div>
+
+  <div class="button-container">
+    <button id="savePdfButton" class="btn btn-followup">
+      <i class="fas fa-save"></i> Save Signature
+    </button>
+  </div>
+
+  <center>
+    <%= link_to 'Close', '#', id: "close-popup", class: 'btn btn-followup'%>
+  </center>
+</form>
+<script type="module">
+  const { jsPDF } = window.jspdf;
+
+  // Initialize Canvas
+  const canvas = document.getElementById("signatureCanvas");
+  const ctx = canvas.getContext("2d");
+  let drawing = false;
+  let lastPoint = null;
+
+  // Set up canvas size (including device pixel ratio adjustment)
+  function setCanvasSize() {
+    const ratio = window.devicePixelRatio || 1;  // Get device pixel ratio
+    const width = 300;
+    const height = 200;
+    
+    // Set internal canvas size
+    canvas.width = width * ratio;
+    canvas.height = height * ratio;
+
+    // Set the display size
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    
+    // Adjust the drawing context for high DPI displays
+    ctx.scale(ratio, ratio);
+  }
+
+  setCanvasSize();  // Call the function to set the canvas size
+
+  // Customize drawing settings
+  ctx.lineWidth = 2;  // Stroke thickness
+  ctx.strokeStyle = "black";  // Stroke color
+  ctx.lineJoin = "round";  // Smooth joins
+  ctx.lineCap = "round";   // Smooth endings
+
+  // Get mouse or touch coordinates
+  function getCoordinates(e) {
+    const rect = canvas.getBoundingClientRect();
+    if (e.touches) {
+      return {
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top,
+      };
+    }
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    };
+  }
+
+  // Start drawing
+  function startDrawing(e) {
+    drawing = true;
+    lastPoint = getCoordinates(e);
+    ctx.beginPath();
+    ctx.moveTo(lastPoint.x, lastPoint.y);
+  }
+
+  // Draw line to the current point
+  function draw(e) {
+    if (!drawing) return;
+
+    const currentPoint = getCoordinates(e);
+    ctx.lineTo(currentPoint.x, currentPoint.y);
+    ctx.stroke();
+
+    // Update the last point
+    lastPoint = currentPoint;
+  }
+
+  // Stop drawing
+  function stopDrawing() {
+    drawing = false;
+    lastPoint = null;
+  }
+
+  // Mouse Events
+  canvas.addEventListener("mousedown", startDrawing);
+  canvas.addEventListener("mousemove", draw);
+  canvas.addEventListener("mouseup", stopDrawing);
+  canvas.addEventListener("mouseout", stopDrawing);
+
+  // Touch Events
+  canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    startDrawing(e);
+  });
+  canvas.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+    draw(e);
+  });
+  canvas.addEventListener("touchend", stopDrawing);
+  canvas.addEventListener("touchcancel", stopDrawing);
+
+  // Save the drawing as a PDF
+  document.getElementById("savePdfButton").addEventListener("click", () => {
+    const pdf = new jsPDF();
+
+    const imageData = canvas.toDataURL("image/png");
+    pdf.addImage(imageData, "PNG", 10, 10, 180, 120);
+    const userName = "<%= patient.name %>";
+    const createdDate = new Date().toLocaleDateString("en-GB");
+    const pdfBlob = pdf.output("blob");
+    const fileName = `${userName}_${createdDate}.pdf`;
+
+    // Upload the PDF to the backend using ActiveStorage
+    const formData = new FormData();
+    formData.append("patient[signature]", pdfBlob, fileName);
+
+    fetch("<%= save_signature_patient_path(patient) %>", {
+      method: "POST",
+      body: formData,
+      headers: {
+        "X-CSRF-Token": "<%= form_authenticity_token %>",
+      },
+    })
+    .then((response) => {
+      if (response.ok) {
+        window.location.href = "<%= signature_patient_path(patient) %>";
+      } else {
+        return response.text().then((text) => {
+          throw new Error(text || "Server error occurred while uploading.");
+        });
+      }
+    })
+    .catch((error) => {
+      alert(`Error uploading the drawing: ${error.message}`);
+      console.error(error);
+    });
+  });
+
+  // Close popup functionality
+  $(document).on("click", "#close-popup", function () {
+    $("#popup-overlay").fadeOut(function () {
+      $(this).remove();
+    });
+  });
+</script>

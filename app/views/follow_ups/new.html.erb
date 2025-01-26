@@ -1,0 +1,135 @@
+
+<div class="canvas-container">
+  <canvas id="drawingCanvas" width="600" height="400" style="border: 1px solid black;"></canvas>
+</div>
+
+<!-- Button to save drawing as PDF -->
+<div class="button-container">
+  <button id="savePdfButton" class="btn-save">
+    <i class="fas fa-save"></i> Save Follow-up as PDF
+  </button>
+</div>
+
+<script type="module">
+  const { jsPDF } = window.jspdf;
+
+  // Setup canvas drawing functionality
+  const canvas = document.getElementById("drawingCanvas");
+  const ctx = canvas.getContext("2d");
+  let drawing = false;
+
+  function setCanvasSize() {
+    // Set the actual canvas size to match its displayed size
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;  // Set internal width
+    canvas.height = rect.height; // Set internal height
+  }
+
+  setCanvasSize();
+
+  window.addEventListener("resize", setCanvasSize);
+
+  const canvasRect = canvas.getBoundingClientRect();
+
+  function getCoordinates(e) {
+  const rect = canvas.getBoundingClientRect();
+  let x, y;
+  if (e.touches) {
+    x = e.touches[0].clientX - rect.left;
+    y = e.touches[0].clientY - rect.top;
+  } else {
+    x = e.clientX - rect.left;
+    y = e.clientY - rect.top;
+  }
+   return { x, y };
+ }
+
+  // Start drawing on touchstart or mousedown
+  canvas.addEventListener("mousedown", (e) => {
+    drawing = true;
+    const { x, y } = getCoordinates(e);
+    ctx.moveTo(x, y);
+  });
+
+  canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault(); // Prevent default touch behavior (like scrolling)
+    drawing = true;
+    const { x, y } = getCoordinates(e);
+    ctx.moveTo(x, y);
+  });
+
+  // Draw while mouse or touch is moving
+  canvas.addEventListener("mousemove", (e) => {
+    if (drawing) {
+      const { x, y } = getCoordinates(e);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    }
+  });
+
+  canvas.addEventListener("touchmove", (e) => {
+    e.preventDefault(); // Prevent default touch behavior (like scrolling)
+    if (drawing) {
+      const { x, y } = getCoordinates(e);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    }
+  });
+
+  // Stop drawing on mouseup or touchend
+  canvas.addEventListener("mouseup", () => {
+    drawing = false;
+  });
+
+  canvas.addEventListener("touchend", () => {
+    drawing = false;
+  });
+
+  // If the mouse or touch leaves the canvas, stop drawing
+  canvas.addEventListener("mouseout", () => {
+    drawing = false;
+  });
+
+  canvas.addEventListener("touchcancel", () => {
+    drawing = false;
+  });
+
+  // Save the drawing as a PDF
+  document.getElementById("savePdfButton").addEventListener("click", () => {
+    const pdf = new jsPDF();
+
+    const imageData = canvas.toDataURL("image/png");
+    pdf.addImage(imageData, "PNG", 10, 10, 180, 180);
+    const userName = "<%= @patient.name %>"
+    const createdDate = new Date().toLocaleDateString('en-GB');
+    const pdfBlob = pdf.output("blob");
+    const fileName = `${userName}_${createdDate}.pdf`;
+
+    // Upload the PDF to the backend using ActiveStorage
+    const formData = new FormData();
+    formData.append("follow_up[pdf]", pdfBlob, fileName);
+    formData.append('follow_up[appointment_id]', "<%= @appointment.id %>");
+
+    fetch("<%= patient_follow_ups_path(@patient) %>", {
+      method: "POST",
+      body: formData,
+      headers: {
+        "X-CSRF-Token": "<%= form_authenticity_token %>",
+      },
+    })
+    .then((response) => {
+      if (response.ok) {
+        window.location.href = "<%= patient_follow_ups_path(@patient) %>"; // Redirect to user profile page
+      } else {
+        alert("Error uploading the drawing.");
+      }
+    })
+    .catch((error) => {
+      alert("Error uploading the drawing.");
+      console.error(error);
+    });
+      
+  });
+</script>
+
+

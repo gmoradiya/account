@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Clinic Follow Up" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+
+  <body>
+    <div class="wrapper">
+
+    <header class="site-header">
+      <div class="container">
+        <div class="header-logo">
+          <%= link_to "ASTHA HOMEOPATHIC CLINIC", root_path, class: "logo" %>
+        </div>
+        <button class="nav-toggle" aria-label="Toggle navigation">
+          <span class="hamburger"></span>
+        </button>
+        <nav class="nav-menu">
+          <ul>
+            <% if user_signed_in? %>
+              <li class="navbar-item"><%= link_to 'Home', root_path, class: 'navbar-link' %></li>
+              <li class="navbar-item"><%= link_to 'Patients', patients_path, class: 'navbar-link' %></li>
+              <li class="navbar-item"><%= link_to 'Medicine', medicines_path, class: 'navbar-link' %></li>
+
+              <li class="navbar-item"><%= link_to "Edit profile", edit_user_registration_path, class: 'navbar-link' %></li>
+              <li class="navbar-item sign-out">
+                <%= button_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'sign-out-button' %>
+              </li>
+            <% else %>
+              <li><%= link_to "Sign up", new_user_registration_path %></li>
+              <li><%= link_to "Sign in", new_user_session_path %></li>
+            <% end %>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+      <main>
+        <%= yield %>
+      </main>
+
+      <!-- Footer Section -->
+      <footer class="site-footer">
+        <div class="container">
+          <p>&copy; <%= Time.now.year %> ASTHA HOMEOPATHIC CLINIC. All rights reserved.</p>
+          <p>Developed by Gautam Moradiya</p>
+        </div>
+      </footer>
+    </div>
+  </body>
+
+ 
+
+</html>

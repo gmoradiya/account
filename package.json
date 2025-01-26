@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "fabric": "^6.5.4",
+    "jquery": "^3.7.1",
+    "select2": "^4.1.0-rc.0"
+  }
+}

@@ -1,0 +1,14 @@
+<h1 class="patient-title">Patient Details</h1>
+
+<div class="patient-details">
+  <div class="patient-info">
+    <p><strong>Name:</strong> <%= @medicine.name %> </p>
+    <p><strong>Dosage:</strong> <%= @medicine.dosage %></p>
+    <p><strong>Description:</strong> <%= @medicine.description %></p>
+  </div>
+
+  <div class="patient-actions">
+    <%= link_to 'Edit', edit_medicine_path(@medicine), class: 'btn btn-warning' %>
+    <%= link_to 'Back to List', medicines_path, class: 'btn btn-secondary' %>
+  </div>
+</div>
