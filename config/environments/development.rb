@@ -68,7 +68,11 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
   config.hosts << "280a-2409-40c1-103b-a55f-8a24-3b1e-cacb-6177.ngrok-free.app"
-  config.hosts << "280a-2409-40c1-103b-a55f-8a24-3b1e-cacb-6177.ngrok-free.app"
+  config.hosts << "*.ngrok-free.app"
+  config.hosts << "astha:3000"
+  config.hosts << "astha.clinic"
+
+
 
   config.logger = Logger.new(config.paths['log'].first, 5, 1.megabytes)
 

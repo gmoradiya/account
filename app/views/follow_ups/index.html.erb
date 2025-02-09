@@ -3,7 +3,7 @@
 </center>
 <% if @follow_ups.any? %>
   <div class="follow-up-container">
-    <center><h2>All Follow Ups or <%= @patient.name %> - <%= @patient.case_number %></h2></center>
+    <center><h2>All Follow Ups For <%= @patient.name %> - <%= @patient.case_number %></h2></center>
     <div class="follow-up-list">
       <% @follow_ups.each do |follow_up| %>
         <div class="pdf-container" id="pdf-<%= follow_up.id %>" data-pdf-url="<%= url_for(follow_up.pdf) %>">
@@ -47,7 +47,9 @@
   </div>
 
 <% else %>
-  <p>No follow up found.</p>
+  <div class="follow-up-container">
+    <center><p>No follow ups.</p> </center>
+  </div>
 <% end %>
 
 <script type='module'>

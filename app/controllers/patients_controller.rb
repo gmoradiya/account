@@ -64,10 +64,14 @@ class PatientsController < ApplicationController
   end
 
   def save_signature
-    binding.pry
     @patient.signature.attach(params[:patient][:signature])
     @patient.date_of_signature = Date.today
-    @patient.save
+
+    if @patient.save
+      redirect_to signature_patient_path(@patient), notice: 'patient signature was successfully added.'
+    else
+      render json: { errors: @patient.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def info

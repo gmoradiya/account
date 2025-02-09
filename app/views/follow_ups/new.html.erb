@@ -100,10 +100,11 @@
 
     const imageData = canvas.toDataURL("image/png");
     pdf.addImage(imageData, "PNG", 10, 10, 180, 180);
-    const userName = "<%= @patient.name %>"
-    const createdDate = new Date().toLocaleDateString('en-GB');
+    const caseNumber = "<%= @patient.case_number %>"
+    const createdDate = new Date().toLocaleDateString('en-GB').split('/').map(part => part.padStart(2, '0')).join('_');
+    const appointmentId =  "<%= @appointment.id %>"
     const pdfBlob = pdf.output("blob");
-    const fileName = `${userName}_${createdDate}.pdf`;
+    const fileName = `${caseNumber}_${createdDate}_${appointmentId}.pdf`;
 
     // Upload the PDF to the backend using ActiveStorage
     const formData = new FormData();

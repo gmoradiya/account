@@ -595,13 +595,13 @@ body {
 
 /* Toggle Styles for Mobile */
 .nav-toggle {
-  display: none;
   background: none;
   border: none;
   cursor: pointer;
   outline: none;
   margin-left: auto; /* Push the toggle button to the right */
   display: block; /* Ensure the toggle is visible for smaller screens */
+  margin-right: 20px;
 }
 
 .nav-toggle .hamburger {
@@ -776,7 +776,7 @@ body {
 .canvas-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   margin-top: 10px;
 }
 
@@ -1360,6 +1360,23 @@ main {
 .btn-followup:hover {
   background-color: #0056b3;
 }
+
+.btn-signature {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color:#2d4373;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-signature:hover {
+  background-color: #2d4373;
+}
+
 
 
 #popup-overlay {

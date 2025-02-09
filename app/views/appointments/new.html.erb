@@ -70,9 +70,6 @@
         method: 'GET',
         dataType: 'json',
         success: (data) => {
-          debugger;
-
-          // Render the received data into the #medicines-result div
           const resultDiv = document.getElementById('appointment_phone_number');
           $('#appointment_phone_number').val(data.phone_number)
         },

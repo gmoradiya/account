@@ -6,6 +6,8 @@ class Patient < ApplicationRecord
 
   validates :case_number, uniqueness: true
 
+  before_destroy :delete_attachment
+
   def age
     return unless date_of_birth.present?
     
@@ -14,5 +16,14 @@ class Patient < ApplicationRecord
     age -= 1 if today < date_of_birth + age.years # Adjust for birthday not yet reached this year
     age
   end
+
+
+  private
+
+  def delete_attachment
+    photo.purge if photo.attached?
+    signature.purge if signature.attached?
+  end
+
     
 end

@@ -7,6 +7,7 @@ class FollowUpsController < ApplicationController
   end
 
   def new
+    # redirect_to signature_patient_path(@patient) if @patient.signature.blank?
     @appointment = @patient.appointments.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).last
     if @appointment.blank?
       @appointment = @patient.appointments.create(patient_name: @patient.name, date: Date.today, phone_number: @patient.phone_number, appointment_type: Appointment.appointment_types[:homeopathy])
@@ -19,7 +20,6 @@ class FollowUpsController < ApplicationController
     if params[:follow_up][:pdf].present?
       # Save the PDF attached to the drawing
       @follow_up.pdf.attach(params[:follow_up][:pdf])
-  
       if @follow_up.save
         redirect_to patient_path(@patient), notice: 'followup was successfully created.'
       else

@@ -40,7 +40,7 @@
             <%= link_to 'Follow ups', patient_follow_ups_path(patient), class: 'btn btn-followup' %>
             <%= link_to 'New Appointment', new_patient_appointment_path(patient), class: 'btn btn-appointment'%>
             <%= link_to 'Delete', patient_path(patient), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
-            <%= link_to 'Signature', signature_patient_path(patient), class: 'btn btn-followup'%>
+            <%= link_to 'Signature', signature_patient_path(patient), class: 'btn btn-signature'%>
 
           </td>
         </tr>
