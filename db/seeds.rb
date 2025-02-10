@@ -58,8 +58,8 @@ require 'faker'
     phone_number: Faker::PhoneNumber.cell_phone,
     email: Faker::Internet.email,
     date_of_birth: rand(Date.new(2000, 1, 1)..Date.today),
-    patient_type: ['accute', 'chronic'].sample,
-    case_number: Faker::Number.number(digits: 6),
+    patient_type: ['Acute', 'Chronic'].sample,
+    # case_number: Patient.generate_case_number,
     sex: ['Male', 'Female'].sample,
     occupation: 'none'
   )

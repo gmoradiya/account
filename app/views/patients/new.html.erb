@@ -30,7 +30,7 @@
   </div>
 
   <div class="form-group">
-    <%= form.label :case_number, class: 'label' %>
+    <%= form.label :case_number, @patient.generate_case_number, class: 'label' %>
     <%= form.text_field :case_number, class: 'input-field' %>
   </div>
 
@@ -41,7 +41,7 @@
 
   <div class="form-group">
     <%= form.label :patient_type, class: 'label' %>
-    <%= form.select :patient_type, ['Accute', 'Chronic'], {}, {class: "input-field"} %>
+    <%= form.select :patient_type, ['Acute', 'Chronic'], {}, {class: "input-field"} %>
   </div>
 
   <div class="form-group">

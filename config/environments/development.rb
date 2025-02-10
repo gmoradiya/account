@@ -71,6 +71,9 @@ Rails.application.configure do
   config.hosts << "*.ngrok-free.app"
   config.hosts << "astha:3000"
   config.hosts << "astha.clinic"
+  config.hosts << "47bb-2409-40c1-4105-1eac-c9b-e15-ae05-7580.ngrok-free.app"
+  config.hosts << "47bb-2409-40c1-4105-1eac-c9b-e15-ae05-7580.ngrok-free.app"
+
 
 
 

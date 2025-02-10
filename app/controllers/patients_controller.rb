@@ -8,6 +8,9 @@ class PatientsController < ApplicationController
     else
       @patients = Patient.all
     end
+    if params[:patient_type].present?
+      @patients = @patients.where(patient_type: params[:patient_type])
+    end
 
     @patients = @patients.order(created_at: :desc).page(params[:page]).per(10) # Paginate results
   end

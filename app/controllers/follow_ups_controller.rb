@@ -4,6 +4,7 @@ class FollowUpsController < ApplicationController
 
   def index
     @follow_ups = @patient.follow_ups.order(created_at: :desc).page(params[:page]).per(12) # Get all drawings (PDFs) for the user 
+    @follow_up = @patient.follow_ups.new # Create a new drawing for the user
   end
 
   def new
@@ -17,11 +18,18 @@ class FollowUpsController < ApplicationController
 
   def create
     @follow_up = @patient.follow_ups.new(follow_up_params)
+    @follow_up.user = current_user
+
+    # @appointment = @patient.appointments.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).last
+    # if @appointment.blank?
+    #   @appointment = @patient.appointments.create(patient_name: @patient.name, date: Date.today, phone_number: @patient.phone_number, appointment_type: Appointment.appointment_types[:homeopathy])
+    # end
+
     if params[:follow_up][:pdf].present?
       # Save the PDF attached to the drawing
       @follow_up.pdf.attach(params[:follow_up][:pdf])
       if @follow_up.save
-        redirect_to patient_path(@patient), notice: 'followup was successfully created.'
+        redirect_to patient_follow_ups_path(@patient), notice: 'followup was successfully created.'
       else
         render json: { errors: @follow_up.errors.full_messages }, status: :unprocessable_entity
       end

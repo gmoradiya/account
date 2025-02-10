@@ -22,7 +22,6 @@ class AppointmentsController < ApplicationController
 
     respond_to do |format|
       format.js {render partial: 'new', locals: {appointment: @appointment, patient: @patient }}
-
       format.html
     end
 
@@ -31,6 +30,8 @@ class AppointmentsController < ApplicationController
   def create
     @appointment = Appointment.new(appointment_params)
     @appointment.save
+    flash[:notice] = "Appointment created successfully"
+
     redirect_to root_path
   end
 
