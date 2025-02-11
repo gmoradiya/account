@@ -3,7 +3,7 @@
 <form>
   <center> <h2> Add Signature </h2> </center>
   <div class="canvas-container">
-    <canvas id="signatureCanvas" width="300" height="200" style="border: 1px solid black;"></canvas>
+    <canvas id="signatureCanvas" width="300" height="150" style="border: 1px solid black;"></canvas>
   </div>
 
   <div class="button-container">
@@ -27,9 +27,9 @@
 
   // Set up canvas size (including device pixel ratio adjustment)
   function setCanvasSize() {
-    const ratio = window.devicePixelRatio || 1;  // Get device pixel ratio
+    const ratio = window.devicePixelRatio || 2;  // Get device pixel ratio
     const width = 300;
-    const height = 200;
+    const height = 150;
     
     // Set internal canvas size
     canvas.width = width * ratio;
@@ -111,40 +111,42 @@
   canvas.addEventListener("touchcancel", stopDrawing);
 
   // Save the drawing as a PDF
+
+
   document.getElementById("savePdfButton").addEventListener("click", () => {
-    const pdf = new jsPDF();
-
-    const imageData = canvas.toDataURL("image/png");
-    pdf.addImage(imageData, "PNG", 10, 10, 180, 120);
-    const userName = "<%= patient.name %>";
-    const createdDate = new Date().toLocaleDateString('en-GB').split('/').map(part => part.padStart(2, '0')).join('_');
-    const pdfBlob = pdf.output("blob");
-    const fileName = `${userName}_${createdDate}.pdf`;
-
-    // Upload the PDF to the backend using ActiveStorage
-    const formData = new FormData();
-    formData.append("patient[signature]", pdfBlob, fileName);
-
-    fetch("<%= save_signature_patient_path(patient) %>", {
-      method: "POST",
-      body: formData,
-      headers: {
-        "X-CSRF-Token": "<%= form_authenticity_token %>",
-      },
-    })
-    .then((response) => {
-      if (response.ok) {
-        window.location.href = "<%= signature_patient_path(patient) %>";
-      } else {
-        return response.text().then((text) => {
-          throw new Error(text || "Server error occurred while uploading.");
-        });
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        alert("Error generating image.");
+        return;
       }
-    })
-    .catch((error) => {
-      alert(`Error uploading the drawing: ${error.message}`);
-      console.error(error);
-    });
+
+      const userName = "<%= patient.name %>";
+
+      const createdDate = new Date().toLocaleDateString('en-GB').split('/').map(part => part.padStart(2, '0')).join('_');
+      const fileName = `${userName}_${createdDate}.png`;
+
+      const formData = new FormData();
+      formData.append("patient[signature]", blob, fileName);
+
+      fetch("<%= save_signature_patient_path(patient) %>", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRF-Token": "<%= form_authenticity_token %>",
+        },
+      })
+      .then((response) => {
+        if (response.ok) {
+          window.location.href = "<%= signature_patient_path(patient) %>";
+        } else {
+          alert("Error uploading the drawing.");
+        }
+      })
+      .catch((error) => {
+        alert("Error uploading the drawing.");
+        console.error(error);
+      });
+    }, "image/png");
   });
 
   // Close popup functionality
