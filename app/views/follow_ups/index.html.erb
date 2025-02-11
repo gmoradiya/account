@@ -39,9 +39,10 @@
       <% @follow_ups.each do |follow_up| %>
         <div class="content">
           <p><strong>Date:</strong> <%= follow_up.created_at.in_time_zone("Asia/Kolkata").strftime('%d - %m - %Y , %H:%M:%S') %></p>
-          <a href="<%= url_for(follow_up.pdf) %>" target="_blank" class="btn btn-secondary">View File</a>
+          <center><a href="<%= url_for(follow_up.pdf) %>" target="_blank" class="btn btn-secondary">View File</a>
           <%#= link_to "Prescription", new_prescription_path(follow_up_id: follow_up.id, appointment_id: follow_up.appointment_id), class: "show-popup-prescription btn btn-secondary"%>
           <%= link_to 'Prescription', '#', class: 'show-popup-prescription btn btn-secondary', data: { follow_up_id: follow_up.id, appointment_id: follow_up.appointment_id } %>
+          </center>
           <div class="patient-table mb-10">
             <table>
               <thead>
