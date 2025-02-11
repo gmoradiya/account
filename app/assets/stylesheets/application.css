@@ -60,7 +60,7 @@ canvas {
   canvas {
     display: block; /* Remove default margin */
     width: 93vw; /* Full width for mobile devices */
-    height: 80vh; /* Almost full height for mobile devices */
+    height: 94vh; /* Almost full height for mobile devices */
   }
 }
 .search-bar {
