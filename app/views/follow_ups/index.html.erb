@@ -1,8 +1,3 @@
-
-<center>
-</center>
-
-
 <%= form_with(model: [@patient, @follow_up], local: true) do |form| %>
   <% if @follow_up.errors.any? %>
     <div class="errors">
@@ -23,58 +18,68 @@
 
   <div class="form-group">
     <%= form.submit 'Save', class: 'btn btn-primary' %>
-    <%= link_to 'New Follow up', new_patient_follow_up_path(@patient, appointment_id: params[:appointment_id]), class: 'btn btn-success' %>
   </div>
 <% end %>
+
+<center>
+<%= link_to 'New Follow up', new_patient_follow_up_path(@patient, appointment_id: params[:appointment_id]), class: 'btn btn-success' %>
+</center>
 
 
 <% if @follow_ups.any? %>
   <div class="follow-up-container">
-    <center><h2>All Follow Ups For <%= @patient.name %> - <%= @patient.case_number %></h2></center>
+    <center>
+      <h2>
+        All Follow Ups For
+        <%= link_to   @patient.name, patient_path(@patient) %>
+        - <%= @patient.case_number %>
+      </h2>
+    </center>
     <div class="follow-up-list">
       <% @follow_ups.each do |follow_up| %>
-
-        <p><strong>Date:</strong> <%= follow_up.created_at.in_time_zone("Asia/Kolkata").strftime('%d - %m - %Y , %H:%M:%S') %></p>
-        <a href="<%= url_for(follow_up.pdf) %>" target="_blank" class="btn btn-primary label">View PDF</a>
-        <%#= link_to "Prescription", new_prescription_path(follow_up_id: follow_up.id, appointment_id: follow_up.appointment_id)%>
-        <%= link_to 'Prescription', '#', class: 'show-popup-prescription btn btn-secondary', data: { follow_up_id: follow_up.id, appointment_id: follow_up.appointment_id }  %>
-        <div class="patient-table mb-10">
-          <table>
-            <thead>
-              <tr>
-                <th>Medicine Name</th>
-                <th>Dose</th>
-                <th>Note</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% follow_up.prescriptions.each do |prescription| %>
+        <div class="content">
+          <p><strong>Date:</strong> <%= follow_up.created_at.in_time_zone("Asia/Kolkata").strftime('%d - %m - %Y , %H:%M:%S') %></p>
+          <a href="<%= url_for(follow_up.pdf) %>" target="_blank" class="btn btn-secondary">View File</a>
+          <%#= link_to "Prescription", new_prescription_path(follow_up_id: follow_up.id, appointment_id: follow_up.appointment_id), class: "show-popup-prescription btn btn-secondary"%>
+          <%= link_to 'Prescription', '#', class: 'show-popup-prescription btn btn-secondary', data: { follow_up_id: follow_up.id, appointment_id: follow_up.appointment_id } %>
+          <div class="patient-table mb-10">
+            <table>
+              <thead>
                 <tr>
-                  <td><%= prescription.medicine.name%> </td>
-                  <td><%= prescription.dosage %></td>
-                  <td><%= prescription.note %></td>
-                  <td class= 'custom-delete-button'>
-                    <%= link_to 'Edit',  '#',class: 'show-popup-edit-prescription', data: {prescription_id: prescription.id}  %>
-                    <%= button_to 'Delete', prescription_path(prescription), method: :delete, data: { confirm: 'Are you sure?' } %>
-                  </td>
+                  <th>Medicine Name</th>
+                  <th>Dose</th>
+                  <th>Note</th>
+                  <th>Action</th>
                 </tr>
+              </thead>
+              <tbody>
+                <% follow_up.prescriptions.each do |prescription| %>
+                  <tr>
+                    <td><%= prescription.medicine.name%> </td>
+                    <td><%= prescription.dosage %></td>
+                    <td><%= prescription.note %></td>
+                    <td class= 'custom-delete-button'>
+                      <%= link_to 'Edit',  '#',class: 'show-popup-edit-prescription', data: {prescription_id: prescription.id}  %>
+                      <%= button_to 'Delete', prescription_path(prescription), method: :delete, data: { confirm: 'Are you sure?' } %>
+                    </td>
+                  </tr>
 
-              <% end %>
-            </tbody>
-          </table>
-        </div>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
 
-        <% if follow_up.pdf.content_type == 'application/pdf'%>
-          <div class="pdf-container" id="pdf-<%= follow_up.id %>" data-pdf-url="<%= follow_up.pdf.url %>">
-            <div class='pdf-canvas' id="canvas-<%= follow_up.id %>">
+          <% if follow_up.pdf.content_type == 'application/pdf'%>
+            <div class="pdf-container" id="pdf-<%= follow_up.id %>" data-pdf-url="<%= follow_up.pdf.url %>">
+              <div class='pdf-canvas' id="canvas-<%= follow_up.id %>">
+              </div>
             </div>
-          </div>
-        <% else %>
-          <div class="pdf-container" ">
-            <%= image_tag follow_up.pdf%>
-          </div>
-        <% end %>
+          <% else %>
+            <div class="pdf-container" ">
+              <%= image_tag follow_up.pdf%>
+            </div>
+          <% end %>
+        </div>
       <% end %>
     </div>
   </div>
@@ -96,7 +101,6 @@
       //pdfUrl = document.getElementById('pdf-' + `${follow_up.id}` + '').getAttribute('data-pdf-url');
       const pdfElement = document.getElementById('pdf-' + `${follow_up.id}` + '');
       if (!pdfElement) {
-        console.error(`Element with id pdf-${follow_up.id} not found`);
         return;
       }
 
