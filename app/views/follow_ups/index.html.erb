@@ -1,6 +1,5 @@
 
 <center>
-  <%= link_to 'New Follow up', new_patient_follow_up_path(@patient, appointment_id: params[:appointment_id]), class: 'btn btn-success pagination' %> 
 </center>
 
 
@@ -24,53 +23,55 @@
 
   <div class="form-group">
     <%= form.submit 'Save', class: 'btn btn-primary' %>
+    <%= link_to 'New Follow up', new_patient_follow_up_path(@patient, appointment_id: params[:appointment_id]), class: 'btn btn-success' %>
   </div>
 <% end %>
 
-<%= link_to 'Back', root_path, class: 'btn btn-secondary' %>
 
 <% if @follow_ups.any? %>
   <div class="follow-up-container">
     <center><h2>All Follow Ups For <%= @patient.name %> - <%= @patient.case_number %></h2></center>
     <div class="follow-up-list">
       <% @follow_ups.each do |follow_up| %>
+
+        <p><strong>Date:</strong> <%= follow_up.created_at.in_time_zone("Asia/Kolkata").strftime('%d - %m - %Y , %H:%M:%S') %></p>
+        <a href="<%= url_for(follow_up.pdf) %>" target="_blank" class="btn btn-primary label">View PDF</a>
+        <%#= link_to "Prescription", new_prescription_path(follow_up_id: follow_up.id, appointment_id: follow_up.appointment_id)%>
+        <%= link_to 'Prescription', '#', class: 'show-popup-prescription btn btn-secondary', data: { follow_up_id: follow_up.id, appointment_id: follow_up.appointment_id }  %>
+        <div class="patient-table mb-10">
+          <table>
+            <thead>
+              <tr>
+                <th>Medicine Name</th>
+                <th>Dose</th>
+                <th>Note</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% follow_up.prescriptions.each do |prescription| %>
+                <tr>
+                  <td><%= prescription.medicine.name%> </td>
+                  <td><%= prescription.dosage %></td>
+                  <td><%= prescription.note %></td>
+                  <td class= 'custom-delete-button'>
+                    <%= link_to 'Edit',  '#',class: 'show-popup-edit-prescription', data: {prescription_id: prescription.id}  %>
+                    <%= button_to 'Delete', prescription_path(prescription), method: :delete, data: { confirm: 'Are you sure?' } %>
+                  </td>
+                </tr>
+
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
         <% if follow_up.pdf.content_type == 'application/pdf'%>
-          <div class="pdf-container" id="pdf-<%= follow_up.id %>" data-pdf-url="<%= url_for(follow_up.pdf) %>">
-          
-            <p><strong>Date:</strong> <%= follow_up.created_at.in_time_zone("Asia/Kolkata").strftime('%d - %m - %Y , %H:%M:%S') %></p>
-            <a href="<%= url_for(follow_up.pdf) %>" target="_blank" class="btn btn-primary label">View PDF</a>
-            <%#= link_to "Prescription", new_prescription_path(follow_up_id: follow_up.id, appointment_id: follow_up.appointment_id)%>
-            <%= link_to 'Prescription', '#', class: 'show-popup-prescription btn btn-secondary', data: { follow_up_id: follow_up.id, appointment_id: follow_up.appointment_id }  %>
-            <div class="patient-table mb-10">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Medicine Name</th>
-                    <th>Dose</th>
-                    <th>Note</th>
-                    <th>Action</th>
-
-                  </tr>
-                </thead>
-                <tbody>
-                  <% follow_up.prescriptions.each do |prescription| %>
-                    <tr>
-                      <td><%= prescription.medicine.name%> </td>
-                      <td><%= prescription.dosage %></td>
-                      <td><%= prescription.note %></td>
-                      <td class= 'custom-delete-button'>
-                        <%= link_to 'Edit',  '#',class: 'show-popup-edit-prescription', data: {prescription_id: prescription.id}  %> 
-                        <%= button_to 'Delete', prescription_path(prescription), method: :delete, data: { confirm: 'Are you sure?' } %>
-                      </td>
-                    </tr>
-
-                  <% end %>
-                </tbody>
-              </table>
-            </div>  
+          <div class="pdf-container" id="pdf-<%= follow_up.id %>" data-pdf-url="<%= follow_up.pdf.url %>">
+            <div class='pdf-canvas' id="canvas-<%= follow_up.id %>">
+            </div>
           </div>
         <% else %>
-          <div class="pdf-container" style="width:1080;">
+          <div class="pdf-container" ">
             <%= image_tag follow_up.pdf%>
           </div>
         <% end %>
@@ -113,7 +114,7 @@
           const totalPages = pdf.numPages;  // Get the number of pages in the PDF
 
           // Loop through all pages and render each one
-          for (let pageNumber = 1; pageNumber <= 1; pageNumber++) {
+          for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
             pdf.getPage(pageNumber).then((page) => {
               const scale = 2;
               const viewport = page.getViewport({ scale: scale });
@@ -122,10 +123,10 @@
               const canvas = document.createElement('canvas');
               const context = canvas.getContext('2d');
               canvas.height = viewport.height;
-              canvas.width = 1080;
+              canvas.width = viewport.width;
 
               // Append the canvas to the corresponding PDF div
-              document.getElementById(`pdf-${follow_up.id}`).appendChild(canvas);
+              document.getElementById(`canvas-${follow_up.id}`).appendChild(canvas);
 
               // Render the page onto the canvas
               const renderContext = {
@@ -182,8 +183,5 @@
         }
       });
     });
-
-    
-
   });
 </script>

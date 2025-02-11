@@ -39,7 +39,7 @@ canvas {
 
 canvas {
   display: block; /* Remove default margin */
-  height: 90vh;
+  height: 95vh;
 }
 
 #pdf-signature canvas{
@@ -59,7 +59,7 @@ canvas {
 @media screen and (max-width: 599px) {
   canvas {
     display: block; /* Remove default margin */
-    width: 95vw; /* Full width for mobile devices */
+    width: 93vw; /* Full width for mobile devices */
     height: 80vh; /* Almost full height for mobile devices */
   }
 }
@@ -426,8 +426,8 @@ form {
 /* Follow Up List Styling */
 .follow-up-list {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
   margin-bottom: 20px;
 }
 
@@ -458,6 +458,19 @@ form {
   background-color: #0056b3;
 }
 
+.pdf-canvas {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.pdf-canvas canvas {
+  width: 800;
+  height: 1200;
+}
+
+.pdf-container img {
+  max-width: 90vw;
+}
 /* Button Styling */
 .btn-success {
   background-color: #28a745;
@@ -480,6 +493,11 @@ form {
 
   .pdf-container {
     margin-bottom: 15px;
+    padding: 5px;
+    max-width: fit-content;
+  }
+  .follow-up-container{
+    padding: 5px;
   }
 }
 
