@@ -16,13 +16,13 @@
     <%= form.file_field :pdf, class: 'input-field' %>
   </div>
 
-  <div class="form-group">
+  <div class="">
     <%= form.submit 'Save', class: 'btn btn-primary' %>
   </div>
 <% end %>
 
 <center>
-<%= link_to 'New Follow up', new_patient_follow_up_path(@patient, appointment_id: params[:appointment_id]), class: 'btn btn-success' %>
+<%= link_to 'New Follow up', new_patient_follow_up_path(@patient, appointment_id: params[:appointment_id]), class: 'btn btn-success mt-10' %>
 </center>
 
 
