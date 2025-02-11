@@ -51,7 +51,7 @@ canvas {
   canvas{
     display: block; /* Remove default margin */
     width: 95vw; /* Slightly larger width for tablets */
-    height: 94vh; /* More height for tablets */
+    height: 92vh; /* More height for tablets */
   }
 }
 
