@@ -1,5 +1,9 @@
+<center>
+  <button id="fullscreen-btn">Full Screen</button>
+</center>
+
 <div class="canvas-container">
-  <canvas id="drawingCanvas" width="600" height="400" style="border: 1px solid black; touch-action: none;"></canvas>
+  <canvas id="drawingCanvas" width="" height="" style="border: 1px solid black; touch-action: none;"></canvas>
 </div>
 
 <!-- Button to save drawing -->
@@ -110,4 +114,34 @@
       });
     }, "image/png");
   });
+
+  document.getElementById("fullscreen-btn").addEventListener("click", function () {
+    let elem = document.documentElement; // Full screen for the entire page
+
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { // Firefox
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { // Chrome, Safari, Edge
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { // IE/Edge
+      elem.msRequestFullscreen();
+    }
+
+    $("#fullscreen-btn").hide();
+    $(".site-header").hide();
+  });
+
+  document.addEventListener("fullscreenchange", exitFullScreenHandler);
+  document.addEventListener("webkitfullscreenchange", exitFullScreenHandler); // Safari, Chrome
+  document.addEventListener("mozfullscreenchange", exitFullScreenHandler); // Firefox
+  document.addEventListener("MSFullscreenChange", exitFullScreenHandler); // IE/Edge
+
+  function exitFullScreenHandler() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement && 
+        !document.mozFullScreenElement && !document.msFullscreenElement) {
+          $(".site-header").show();
+          $("#fullscreen-btn").show();
+    }
+  }
 </script>
