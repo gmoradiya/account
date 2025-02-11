@@ -6,4 +6,13 @@ class User < ApplicationRecord
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+
+
+  def active_for_authentication?
+    super && is_active?
+  end
+
+  def inactive_message
+    is_active? ? super : :inactive_account
+  end
 end

@@ -10,9 +10,11 @@
 
 
 User.create!([
-  { email: "staff1@gmail.com", password: "password", password_confirmation: "password" },
-  { email: "staff2@gmail.com", password: "password", password_confirmation: "password" },
-  { email: "staff3@gmail.com", password: "password", password_confirmation: "password" }
+  { name: 'super_admin', email: "sadmin@gmail.com", password: "password", password_confirmation: "password" , role: 'super_admin'},
+  { name: 'admin', email: "admin@gmail.com", password: "password", password_confirmation: "password" , role: 'admin'},
+  { name: 'staff 1', email: "staff1@gmail.com", password: "password", password_confirmation: "password", role: 'staff' },
+  { name: 'staff 2', email: "staff2@gmail.com", password: "password", password_confirmation: "password", role: 'staff' },
+  { name: 'recenptionist', email: "receptionist@gmail.com", password: "password", password_confirmation: "password", role: 'receptionist' }
 ])
 
 

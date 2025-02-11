@@ -1,6 +1,7 @@
 class FollowUpsController < ApplicationController
   before_action :set_patient
   before_action :authenticate_user!
+  before_action :check_admin_staff_role
 
   def index
     @follow_ups = @patient.follow_ups.order(created_at: :desc).page(params[:page]).per(12) # Get all drawings (PDFs) for the user 

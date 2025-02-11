@@ -1,4 +1,5 @@
 class PrescriptionsController < ApplicationController
+  before_action :check_admin_staff_role
   def new
     @prescription = Prescription.new
     respond_to do |format|
@@ -39,7 +40,6 @@ class PrescriptionsController < ApplicationController
 
     render json: { medicines: medicines.map { |medicine| { id: medicine.id, name: medicine.name } } }
   end
-
 
   private
 

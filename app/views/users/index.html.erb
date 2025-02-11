@@ -1,0 +1,53 @@
+<center><h1>Users</h1>
+
+<%= link_to 'New User', new_user_path, class: 'btn btn-primary mb-10' %>
+</center>
+<div class="search-bar">
+  <%= form_with url: users_path, method: :get, local: true do %>
+    <div class="form-group">
+      <input type="text" name="query" placeholder="Search by Name or Email" value="<%= params[:query] %>" class="input-field">
+    </div>
+
+    <button type="submit">Search</button>
+  <% end %>
+</div>
+
+<div class="patient-table">
+
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Is Active</th>
+
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each_with_index do |user, ind| %>
+        <tr>
+          <td><%= ind + 1 %></td>
+          <td><%= user.name %></td>
+          <td><%= user.email %></td>
+          <td><%= user.role %></td>
+          <td><%= user.is_active %></td>
+
+          <td>
+            <%= link_to 'View', user_path(user), class: 'btn btn-view' %>
+            <%= link_to 'Edit', edit_user_path(user), class: 'btn btn-edit' %>
+            <%= link_to 'Delete', user_path(user), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <%= paginate @users %>
+</div>
+
+

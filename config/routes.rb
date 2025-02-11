@@ -4,9 +4,18 @@ Rails.application.routes.draw do
   # get "appointments/edit"
   devise_for :users
   root "displays#daily_appointment"
+  resources :users, except: [:create] do
+    collection do
+      get :search
+      post :create_user
+    end
+    member do
+      get :info
+    end
+  end
   resources :patients do
     collection do
-      get 'search'
+      get :search
     end
     member do
       get :signature
@@ -22,12 +31,12 @@ Rails.application.routes.draw do
   resources :appointments, only: [:new, :create] do
     member do
       get :change_status
-      get 'prescriptions', to: 'appointments#prescriptions', defaults: { format: :js }
+      get :prescriptions, to: 'appointments#prescriptions', defaults: { format: :js }
     end
   end
   resources :prescriptions do
     collection do
-      get 'search_medicines'
+      get :search_medicines
     end
   end
 

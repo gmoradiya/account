@@ -1,0 +1,15 @@
+<h1 class="patient-title">User Details</h1>
+<div class="patient-details">
+  <div class="patient-info">
+    <p><strong>Name:</strong> <%= @user.name %> </p>
+    <p><strong>Email:</strong> <%= @user.email %></p>
+    <p><strong>Role:</strong> <%= @user.role %></p>
+    <p><strong>Is Active:</strong> <%= @user.is_active %></p>
+
+  </div>
+
+  <div class="patient-actions">
+    <%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-warning' %>
+    <%= link_to 'Back to List', users_path, class: 'btn btn-secondary' %>    
+  </div>
+</div>

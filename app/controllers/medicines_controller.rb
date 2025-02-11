@@ -1,5 +1,6 @@
 class MedicinesController < ApplicationController
   before_action :set_medicine, only: %i[show edit update destroy]
+  before_action :check_admin_staff_role
 
   # GET /medicines
   def index
