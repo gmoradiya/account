@@ -9,15 +9,12 @@
 
     </div>
     <div class="form-group">  
-      <%= select_tag :patient_type, options_for_select(["Acute", "Chronic" ], params[:patient_type]), {class: 'input-field'}%>
+      <%= select_tag :patient_type, options_for_select(["Acute", "Chronic" ], params[:patient_type]), {prompt: "Select type", class: 'input-field'}%>
     </div>
-
     <button type="submit">Search</button>
 
   <% end %>
 </div>
-
-
 
 <div class="patient-table">
 
