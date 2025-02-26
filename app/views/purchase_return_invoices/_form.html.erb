@@ -1,0 +1,193 @@
+<%= form_with(model: purchase_return_invoice, local: true) do |f| %>
+  <div class='form-details'>
+    <div class="form-group">
+      <%= f.label :bill_no, class: 'label' %>
+      <%= f.text_field :bill_no, required: true, class: 'input-field' %>
+    </div>
+
+   
+    <div class="form-group">
+      <%= f.label :purchase_invoice, class: 'label' %>
+      <%= f.select :purchase_invoice_id, PurchaseInvoice.where(id: purchase_return_invoice&.purchase_invoice_id).collect { |pi| [pi.bill_no, pi.id] }, { include_blank: 'Select Invoice', selected: purchase_return_invoice&.purchase_invoice_id }, class: 'input-field searchable-select-purchase-invoice', id: "" %>
+    </div>
+
+
+    <div class="form-group">
+      <%= f.label :date, class: 'label' %>
+      <%= f.date_field :date, required: true, value: purchase_return_invoice.date || Date.today, class: 'input-field' %>
+    </div>
+  </div>
+
+  <h3>Products</h3>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>
+            Product
+            <%= link_to "#", id: 'newProduct' do%> 
+              + 
+            <%end%>
+          </th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Total</th>
+          <th>CGST(%) </th>
+          <th>CGST</th>
+          <th>SGST (%)</th>
+          <th>SGST</th>
+          <th>Discount (%)</th>
+          <th>Discount</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="products">
+        <%= f.fields_for :purchase_return_inventories do |product_form| %>
+          <%= render 'product_fields', f: product_form %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <button type="button" class='btn btn-followup mt-10' id="add-product">Add Product</button>
+
+  <div class='form-group'>
+    <center><%= f.submit "Save Invoice", class: 'btn btn-primary' %></center>
+  </div>
+<% end %>
+
+<script>
+  function handleProductChange(event) {
+    let productField = event.target;
+    let value = productField.value;
+    let row = event.target.closest(".product-fields");
+    let priceField = row.querySelector(".price");
+    let cgstPercentageField = row.querySelector(".cgst_percentage");
+    let sgstPercentageField = row.querySelector(".sgst_percentage");
+    let quantityField = row.querySelector(".quantity");
+
+    $.ajax({
+      url: `/products/${value}/info`,
+      type: 'GET',
+      dataType: 'json',
+      success: (data) => {
+        priceField.value = data.price || 0.0;
+        cgstPercentageField.value = data.hsn ? data.hsn.cgst : 0.0;
+        sgstPercentageField.value = data.hsn ? data.hsn.sgst : 0.0;
+        quantityField.focus();
+        quantityField.select();
+      },
+      error: (xhr, status, error) => {
+        console.error('Error fetching product:', error);
+      },
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    $('.searchable-select-purchase-invoice').select2({
+      placeholder: "Search Sales Invoice",
+      allowClear: true,
+      ajax: {
+        url: "<%= search_purchase_invoices_path %>",  // The route for searching products
+        dataType: 'json',
+        delay: 250,  // Delay before the request is sent
+        data: function (params) {
+          return {
+            q: params.term  // Send the search query
+          };
+        },
+        processResults: function (data) {
+          return {
+            results: data.invoices.map(function(purchase_invoice) {
+              return {
+                id: purchase_invoice.id,
+                text: purchase_invoice.bill_no
+              };
+            })
+          };
+        }
+      }
+    });
+
+
+    function initializeSelect2() {
+      $('.searchable-select').select2({
+        placeholder: "Search Product",
+        allowClear: true,
+        ajax: {
+          url: "<%= search_products_path %>",  // The route for searching products
+          dataType: 'json',
+          delay: 250,  // Delay before the request is sent
+          data: function (params) {
+            return {
+              q: params.term  // Send the search query
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data.products.map(function(product) {
+                return {
+                  id: product.id,
+                  text: product.name
+                };
+              })
+            };
+          }
+        }
+      });
+    }
+
+    $(document).on('change', '[name="purchase_return_invoice[purchase_return_inventories_attributes][0][product_id]"]', function(event) {
+      handleProductChange(event);
+    });
+
+    initializeSelect2();
+
+    document.getElementById("add-product").addEventListener("click", function() {
+      let productsTable = document.getElementById("products");
+      let newRow = document.querySelector(".product-fields").cloneNode(true);
+
+      newRow.querySelectorAll(".select2-container").forEach(function(select2Container) {
+        select2Container.remove();  // Remove the select2 container completely
+      });
+
+      // Destroy select2 for the cloned select field
+      newRow.querySelectorAll(".searchable-select").forEach(function(select) {
+        $(select).select2('destroy');  // Destroy the existing select2 instance
+        $(select).removeClass('select2-hidden-accessible');  // Remove any extra select2 classes
+        $(select).removeAttr('aria-hidden'); // Remove aria-hidden
+        $(select).removeAttr('data-select2-id'); // Remove select2 data attributes
+      });
+
+      let timestamp = new Date().getTime();
+
+      newRow.innerHTML = newRow.innerHTML.replace(/\[\d+\]/g, `[${timestamp}]`);
+
+      newRow.querySelectorAll("input").forEach(input => {
+        if(input.className != 'id'){
+          input.value = '0.0';  // Clear the value of the input fields
+        }
+      });
+
+      newRow.querySelectorAll("select").forEach(select => {
+        select.selectedIndex = 0;  // Reset select option to the first one (Select Product)
+        $(select).val(null).trigger('change');  // Clear select2 selection
+      });
+
+      productsTable.appendChild(newRow);
+
+      $(document).on('change', '[name="purchase_return_invoice[purchase_return_inventories_attributes]' + `[${timestamp}]` + '[product_id]"]', function(event) {
+          handleProductChange(event);
+      });
+
+      initializeSelect2();
+    });
+
+    document.addEventListener("click", function(event) {
+      if (event.target.classList.contains("remove-product")) {
+        event.target.closest(".product-fields").remove();
+      }
+    });
+  });
+</script>

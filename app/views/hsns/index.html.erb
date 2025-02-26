@@ -1,0 +1,55 @@
+<center><h1>HSNs</h1>
+
+<%= link_to 'New HSN', new_hsn_path, class: 'btn btn-primary mb-10' %>
+</center>
+<div class="search-bar">
+  <%= form_with url: hsns_path, method: :get, local: true do %>
+    <input type="text" name="query" placeholder="Search by code name or description" value="<%= params[:query] %>">
+    <button type="submit">Search</button>
+  <% end %>
+</div>
+
+<div class="patient-table">
+
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+
+        <th>Schedule</th>
+        <th>S No</th>
+        <th>Code</th>
+        <th>Description</th>
+        <th>CGST</th>
+        <th>SGST</th>
+        <th>GST</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @hsns.each_with_index do |hsn, ind| %>
+        <tr>
+          <td><%= ind + 1 %></td>
+
+          <td><%= hsn.schedule %></td>
+          <td><%= hsn.s_no %></td>
+          <td><%= hsn.code %></td>
+          <td><%= hsn.description %></td>
+          <td><%= hsn.sgst %></td>
+          <td><%= hsn.cgst %></td>
+          <td><%= hsn.gst %></td>
+
+          <td>
+            <%= link_to 'View', hsn_path(hsn), class: 'btn btn-view' %>
+            <%= link_to 'Edit', edit_hsn_path(hsn), class: 'btn btn-edit' %>
+            <%= link_to 'Delete', hsn_path(hsn), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <%= paginate @hsns %>
+</div>

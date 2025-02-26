@@ -1,0 +1,52 @@
+<%= form_with(model: customer, local: !is_remote ) do |form| %>
+  <% if customer.errors.any? %>
+    <div class="errors">
+      <h2><%= pluralize(customer.errors.count, "error") %> prohibited this customer from being saved:</h2>
+      <ul>
+        <% customer.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :name, class: 'label' %>
+    <%= form.text_field :name, required: true, class: 'input-field' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :owner_name, class: 'label' %>
+    <%= form.text_field :owner_name, class: 'input-field' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :phone_number, class: 'label' %>
+    <%= form.text_field :phone_number, required: true, class: 'input-field' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :alternate_phone_number, class: 'label' %>
+    <%= form.text_field :alternate_phone_number, class: 'input-field' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :email, class: 'label' %>
+    <%= form.text_field :email,  class: 'input-field' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :gst_detail, class: 'label' %>
+    <%= form.text_field :gst_detail, class: 'input-field' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.submit 'Save', class: 'btn btn-primary' %>
+  </div>
+<% end %>
+
+<% if is_remote %>
+  <center>
+    <%= link_to 'Close', '#', id: "close-popup", class: 'btn btn-followup'%>
+  </center>
+<%end%>

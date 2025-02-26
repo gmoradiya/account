@@ -1,0 +1,20 @@
+<h1 class="patient-title">Product Details</h1>
+
+<div class="patient-details">
+  <div class="patient-info">
+
+    <p><strong>Name:</strong> <%= @payment.party_name %> </p>
+    <p><strong>Description:</strong> <%= @payment.bill_no %> </p>
+    <p><strong>HSN Code:</strong> <%= @payment.amount %> </p>
+    <p><strong>Price:</strong> <%= @payment.date %> </p>
+    <p><strong>Quantity:</strong> <%= @payment.payment_mode %> </p>
+    <p><strong>Quantity:</strong> <%= @payment.payment_detail %> </p>
+  </div>
+
+  <div class="patient-actions">
+    <%= link_to 'Edit', edit_payment_path(@payment), class: 'btn btn-warning' %>
+    <%#= link_to 'Inventory Report', product_purchase_inventories_path(@product), class: 'btn btn-info' %>
+
+    <%= link_to 'Back to List', payments_path, class: 'btn btn-secondary' %>
+  </div>
+</div>

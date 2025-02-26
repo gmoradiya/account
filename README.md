@@ -29,20 +29,11 @@ crontab -e
 
 0 2 * * * /path/to/backup_postgresql.sh
 
-
-
-
 sudo nano /etc/hosts
-
 
 192.168.*.*  astha.local
 
-
-
-
 * sudo nano /etc/nginx/sites-available/patient
-
-
 
 **************************
 server {
@@ -62,7 +53,5 @@ server {
 * sudo ln -s /etc/nginx/sites-available/patient /etc/nginx/sites-enabled/
 * sudo nginx -t
 * sudo systemctl reload nginx
-
-
 
 * ...

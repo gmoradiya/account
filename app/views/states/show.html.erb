@@ -1,0 +1,12 @@
+<h1 class="patient-title">State Details</h1>
+
+<div class="patient-details">
+  <div class="patient-info">
+    <p><strong>Name:</strong> <%= @state.name %> </p>
+  </div>
+
+  <div class="patient-actions">
+    <%= link_to 'Edit', edit_state_path(@state), class: 'btn btn-warning' %>
+    <%= link_to 'Back to List', states_path, class: 'btn btn-secondary' %>
+  </div>
+</div>

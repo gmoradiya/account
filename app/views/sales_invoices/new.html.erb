@@ -1,0 +1,80 @@
+<div class='switch-container'>
+  <div class= 'page-header'>New Sales Invoice</div>
+  <label class="switch">
+    <%= check_box_tag :invoice_type %>
+    <span class="slider round"></span>
+  </label>  Job Work Invoice
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  <label class="switch">
+    <%= check_box_tag :bill_types %>
+    <span class="slider round"></span>
+  </label>  With Out GST 
+</div>
+
+<div class='invoice'>
+    <%= render 'form', sales_invoice: @sales_invoice %>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    $(document).on('click', '#newCustomer', function (event) {
+      event.preventDefault();
+      $.ajax({
+        url: `/customers/new`,
+        type: 'GET',
+        dataType: "script",
+        success: function (response) {
+          $('body').append('<div id="popup-overlay"> </div>');
+          $('#popup-overlay').prepend("<div class='popup-form'><div class='popup-header'> New Customer </div></div>");
+          $('.popup-form').append(response);
+
+          $('#popup-overlay').fadeIn();
+        },
+        error: function (xhr) {
+          alert('Failed to load.');
+        }
+      });
+    });
+
+    $(document).on('click', '#newProduct', function (event) {
+      event.preventDefault();
+      $.ajax({
+        url: `/products/new`,
+        type: 'GET',
+        dataType: "script",
+        success: function (response) {
+          $('body').append('<div id="popup-overlay"></div>');
+          $('#popup-overlay').prepend("<div class='popup-form'><div class='popup-header'> New Product </div></div>");
+          $('.popup-form').append(response);
+
+          $('#popup-overlay').fadeIn();
+        },
+        error: function (xhr, status, error) {
+          alert('Failed to load popup content.');
+        }
+      });
+    });
+
+    $(document).on('click', '#close-popup', function () {
+      $('#popup-overlay').fadeOut(function () {
+        $(this).remove();
+      });
+    });
+
+    $("#invoice_type").on('change', function(){
+      $(".invoiceable_type").val($("#invoice_type:checked").length == 1 ? 'JobInventory' : 'PurchaseInventory');
+    }); 
+
+    $("#bill_types").on('change', function(){
+      $(".bill_type").val($("#bill_types:checked").length == 1 ? 'without_gst' : 'with_gst');
+      $('.cgst').val(0);
+      $('.sgst').val(0);
+      $('.cgst_percentage').val(0);
+      $('.sgst_percentage').val(0);
+    }); 
+  });
+
+</script>

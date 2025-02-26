@@ -1,10 +1,7 @@
 Rails.application.routes.draw do
-  # get "appointments/index"
-  # get "appointments/show"
-  # get "appointments/edit"
   devise_for :users
-  root "displays#daily_appointment"
-  resources :users, except: [:create] do
+  root "displays#index"
+  resources :users, except: [ :create ] do
     collection do
       get :search
       post :create_user
@@ -13,36 +10,89 @@ Rails.application.routes.draw do
       get :info
     end
   end
-  resources :patients do
+  resources :customers do
     collection do
       get :search
     end
     member do
-      get :signature
-      get :new_signature
-      post :save_signature
       get :info
     end
 
-    resources :follow_ups, only: [:index, :create, :new, :destroy]
-    resources :appointments
+    resources :addresses
   end
 
-  resources :appointments, only: [:new, :create] do
-    member do
-      get :change_status
-      get :prescriptions, to: 'appointments#prescriptions', defaults: { format: :js }
-    end
-  end
-  resources :prescriptions do
+  resources :suppliers do
     collection do
-      get :search_medicines
+      get :search
+    end
+    member do
+      get :info
+    end
+  end
+  resources :countries
+  resources :states
+  resources :products do
+    collection do
+      get :search
+    end
+
+    member do
+      get :info
+      get :suppliers_list
+      get :purchase_invoices_list
+      get :job_invoices_list
+      get :sales_invoices_list
+    end
+
+    resources :purchase_inventories
+    resources :sales_inventories
+    resources :job_inventories
+  end
+  resources :hsns do
+    collection do
+      get :search
     end
   end
 
-  resources :medicines
+  resources :sales_invoices do
+    collection do
+      get :search
+    end
+    member do
+      get :info
+    end
+  end
+  resources :purchase_invoices do
+    collection do
+      get :search
+    end
+    member do
+      get :info
+    end
+  end
+  resources :sales_return_invoices do
+    collection do
+      get :search
+    end
+    member do
+      get :info
+    end
+  end
+  resources :purchase_return_invoices do
+    collection do
+      get :search
+    end
+    member do
+      get :info
+    end
+  end
 
-  get 'daily_appointments' => 'displays#daily_appointment'
+  resources :job_invoices
+
+  resources :organizations
+  resources :payments
+
+  # get "daily_appointments" => "displays#daily_appointment"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

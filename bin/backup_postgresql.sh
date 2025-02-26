@@ -6,7 +6,7 @@ DB_NAME="follow_up_dev"
 DB_USER="postgres"
 # SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "---------------------$SCRIPT_DIR"
-BACKUP_DIR="/home/rails/clinic_follow_up/storage/backups"
+BACKUP_DIR="/home/rails/shiv_account/storage/backups"
 
 BACKUP_FILE="$BACKUP_DIR/$(date +%Y%m%d_%H%M%S)_$DB_NAME.dump"
 

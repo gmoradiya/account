@@ -1,0 +1,191 @@
+
+<div>
+  <label>
+    <%= radio_button_tag :bill_types, 'SalesInvoice', billable_type == 'SalesInvoice', class: 'bill_types' %>
+    Sales Invoice
+  </label>
+
+  <label>
+    <%= radio_button_tag :bill_types, 'SalesReturnInvoice', billable_type == 'SalesReturnInvoice', class: 'bill_types' %>
+    Sales Return Invoice
+  </label>
+
+  <label>
+    <%= radio_button_tag :bill_types, 'PurchaseInvoice', billable_type == 'PurchaseInvoice', class: 'bill_types' %>
+    Purchase Invoice
+  </label>
+  <label>
+    <%= radio_button_tag :bill_types, 'PurchaseReturnInvoice', billable_type == 'PurchaseReturnInvoice', class: 'bill_types' %>
+    Purchase Return Invoice
+  </label>
+</div>
+
+
+<%= form_with(model: payment, local: !is_remote) do |form| %>
+  <% if payment.errors.any? %>
+    <div class="errors">
+      <h2><%= pluralize(payment.errors.count, "error") %> prohibited this payment from being saved:</h2>
+      <ul>
+          <% payment.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+          <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :billable_id, "Chalan",  class: 'label' %>
+    <%if !form.object.persisted? %>
+      <%= form.select :billable_id, [] ,{prompt: 'select payment'}, { class: 'input-field select-billable'} %>
+      <%= form.hidden_field :billable_type, value: billable_type || 'PurchaseInvoice', class: 'billable_type' %>
+    <%else%>
+      <strong><%= payment.party_name %> - <%= payment.bill_no%> </strong>
+    <%end%>
+
+  </div>
+
+  <div class="form-group">
+    <%= form.label :amount, class: 'label' %>
+    <%= form.number_field :amount, class: 'amount input-field' %>
+  </div>
+ 
+  <div class="form-group">
+    <%= form.label :date, class: 'label' %>
+    <%= form.date_field :date, value: payment.date || Date.today, class: 'input-field' %>
+  </div>
+  <div class="form-group">
+  <%= form.label :payment_mode, class: 'label' %>
+    <%= form.select :payment_mode, Payment.payment_modes ,{prompt: 'select payment mode'}, { class: 'input-field'} %>
+  </div>
+  <div class="form-group">
+    <%= form.label :payment_detail, class: 'label' %>
+    <%= form.text_field :payment_detail, class: 'input-field' %>
+  </div>
+
+  <div class="form-group">
+      <%= form.submit 'Save', class: 'btn btn-primary' %>
+  </div>
+<% end %>
+
+ <%if is_remote%>
+  <center>
+    <%= link_to 'Close', '#', id: "close-popup", class: 'btn btn-followup'%>
+  </center>
+<%end%>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    
+    $('.bill_types').on('change', function(){
+    initializeSelect2();
+
+    });
+    function initializeSelect2() {
+      let billableId = parseInt("<%= billable_id %>");
+      let url =  '';
+      let invoiceType = $('.bill_types:checked').val();
+
+      if(invoiceType == "PurchaseReturnInvoice") {
+        url = '/purchase_return_invoices/search';
+      }
+      else if(invoiceType == "SalesReturnInvoice"){
+        url = '/sales_return_invoices/search';
+      }
+      else if(invoiceType == "PurchaseInvoice"){
+        url = '/purchase_invoices/search';
+      }
+      else if(invoiceType == "SalesInvoice"){
+        url = '/sales_invoices/search';
+      }
+
+      // let url = $("#bill_types:checked").length == 1  ? `/sales_invoices` : `/purchase_invoices`;
+      //$('.billable_type').val($("#bill_types:checked").length == 1  ? `SalesInvoice` : `PurchaseInvoice`)
+      $('.select-billable').select2({
+        placeholder: "Search Bill",
+        allowClear: true,
+        ajax: {
+          url: url,  // The route for searching products
+          dataType: 'json',
+          delay: 250,  // Delay before the request is sent
+          data: function (params) {
+            return {
+              q: params.term  // Send the search query
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data.invoices.map(function(invoice) {
+                return {
+                  id: invoice.id,
+                  text: invoice.bill_no
+                };
+              })
+            };
+          }
+        }
+      });
+
+      if (billableId) {
+        $.ajax({
+          url: url, // Same URL as in Select2 AJAX
+          dataType: 'json',
+          success: function(data) {
+            let selectedInvoice = data.invoices.find(inv => inv.id === billableId);
+            if (selectedInvoice) {
+              let option = new Option(selectedInvoice.bill_no, selectedInvoice.id, true, true);
+              $('.select-billable').append(option).trigger('change');
+            }
+          }
+        });
+      }
+    
+    }
+    initializeSelect2();
+
+    $('.select-billable').on('change', function(){
+      value = $(this).val();
+      let invoiceType = $('.bill_types:checked').val();
+      let url =  '';
+      if(invoiceType == "PurchaseReturnInvoice") {
+        url = `/purchase_return_invoices/${value}/info`;
+      }
+      else if(invoiceType == "SalesReturnInvoice"){
+        url = `/sales_return_invoices/${value}/info`;
+      }
+      else if(invoiceType == "PurchaseInvoice"){
+        url = `/purchase_invoices/${value}/info`;
+      }
+      else if(invoiceType == "SalesInvoice"){
+        url = `/sales_invoices/${value}/info`;
+      }
+
+      // let url = $("#bill_types:checked").length == 1  ? `/sales_invoices/${value}/info` : `/purchase_invoices/${value}/info`;
+      $.ajax({
+        url: url,  // The route for fetching invoice info
+        dataType: 'json',
+        delay: 250,  // Delay before sending request
+        data: {
+          q: value  // Send the selected value
+        },
+        success: function(data) {
+          let amount = 0;
+          if($("#bill_types:checked").length == 1){
+            let receivedAmount = parseFloat(data.received_amount) || 0;
+            let grandTotal = parseFloat(data.grand_total) || 0;
+            amount = grandTotal - receivedAmount;
+          }
+          else{
+            let paidAmount = parseFloat(data.paid_amount) || 0;
+            let grandTotal = parseFloat(data.grand_total) || 0;
+            amount = grandTotal - paidAmount;
+          }
+          $('.amount').val(amount)
+        },
+        error: function(xhr, status, error) {
+          console.error("Error:", error);
+        }    
+      });
+      
+    });
+  });
+</script>

@@ -1,0 +1,116 @@
+<div class="invoice-container" id='invoiceContainer'>
+  <div class="invoice-header">
+    
+
+    <%=  @job_invoice.customer.name %><br>
+    <%=  @job_invoice&.customer&.addresses&.first&.address&.gsub("\n", "<br>")&.html_safe %><br>
+    Mob: <%=  @job_invoice.customer.phone_number %><br>
+    GSTIN: <%=  @job_invoice.customer.gst_detail %>J<br>
+  </div>
+
+  <table class="invoice-details">
+    <tr>
+      <td>
+      <strong>Billed To (Customer):</strong></br>
+      <p> <%= @job_invoice.customer.name %></p>
+      <p><strong>Mobile:</strong> <%= @job_invoice.customer.phone_number %> </p>
+      <p><strong>GSTIN:</strong> <%= @job_invoice.customer.gst_detail %> </p>
+
+      </td>
+      <td>
+        <strong>Delivery Address:</strong><br>
+        <p> <%= @job_invoice.customer.name %></p>
+        <p><strong>Mobile:</strong> <%= @job_invoice.customer.phone_number %> </p>
+        <p><strong>GSTIN:</strong> <%#= @job_invoice.customer.gst_detail %> </p>
+      </td>
+
+      <td>
+        <p><strong>Invoice No:</strong> <%= @job_invoice.bill_no %>  </p>
+        <p><strong>Invoice Date:</strong>  <%= @job_invoice.date %> </p>
+        <p><strong>Challan No:</strong></p>
+        <p><strong>Challan Date:</strong></p>
+        <p><strong>Place of Supply:</strong><%#= @job_invoice.customer.address.state.gst_code%></p>
+      </td>
+
+    </tr>
+  </table>
+
+  <table class="invoice-details">
+ 
+  </table>
+
+  <table class="invoice-details">
+    <thead>
+      <tr>
+        <th>S.No.</th>
+        <th>Chln</th>
+        <th>Del. Chl. No</th>
+        <th>Product / Service</th>
+        <th>SAC Code</th>
+        <th>Quantity</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @job_invoice.job_inventories.each_with_index do |product, ind| %>
+        <tr>
+          <td><%= ind %></td>
+          <td><%=  %></td>
+          <td><%=  %></td>
+          <td><%= product.product.name %></td>
+          <td><%= product.product&.hsn&.code %></td>
+          <td><%= product.quantity %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <table class="invoice-details">
+    <tr>
+      <td><strong>Bank Details:</strong><br>
+          Name: PRIME CO-OP.BANK LTD.<br>
+          A/c No: 10302001002504<br>
+          IFSC Code: PMEC0100304<br>
+          Branch: KATARGAM
+      </td>
+      <td>
+
+          
+      </td>
+    </tr>
+  </table>
+
+  <p><strong>Payment within: </strong> <span class="highlight">7 Days</span> <strong>Due Date:</strong> 22-06-23</p>
+  <p><strong>Rupees:</strong> EIGHT THOUSAND SEVEN HUNDRED SIXTY NINE Only</p>
+
+  <p><strong>Terms & Conditions:</strong></p>
+  <ul>
+  <li>Any claim or disputes arising from change in quality or shortage in quantity or any cost whatsoever will not be entertained once the goods are delivered.</li>
+  <li>All payments should be on or before the due date.</li>
+  <li>Beyond due date, an interest of 18% will be charged on the amount of the bill after the due date.</li>
+  <li>We are not responsible for any loss or damage during transit.</li>
+  <li>Payment to be made by Payees A/c Cheque, Draft or NEFT/IMPS/RTGS only.</li>
+  </ul>
+
+  <p>For LAXMI FASHION</p>
+  <p><strong>Received By:</strong> _________________________ <strong>Prepared By:</strong>_________________________ <strong>Authorized Signatory:</strong> _________________________</p>
+
+</div>
+
+<script>
+
+  function printInvoice() {
+    var divContents = document.getElementById("invoiceContainer").innerHTML; // Get content from the div
+    var printWindow = window.open('', '', 'height=600,width=800'); // Open a new window
+
+    // Set up the content of the new window
+    printWindow.document.write('<html><head><title>Print</title>');
+    printWindow.document.write('<link rel="stylesheet" href="<%=asset_url('application.css') %>" type="text/css" />'); 
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(divContents);
+    printWindow.document.write('</body></html>');
+
+    printWindow.document.close(); // Close the document for printing
+    printWindow.print(); // Trigger the print dialog
+}
+
+</script>

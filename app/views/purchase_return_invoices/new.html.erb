@@ -1,0 +1,54 @@
+<h1>New Purchase Return Invoice</h1>
+<div class='invoice'>
+    <%= render 'form', purchase_return_invoice: @purchase_return_invoice %>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    $(document).on('click', '#newSupplier', function (event) {
+      event.preventDefault();
+      const appointmentId = $(this).data('appointment-id');
+      $.ajax({
+        url: `/suppliers/new`,
+        type: 'GET',
+        dataType: "script",
+        success: function (response) {
+          $('body').append('<div id="popup-overlay"> </div>');
+          $('#popup-overlay').prepend("<div class='popup-form'><div class='popup-header'> New Supplier </div></div>");
+          $('.popup-form').append(response);
+
+          $('#popup-overlay').fadeIn();
+        },
+        error: function (xhr) {
+          alert('Failed to load popup content.');
+        }
+      });
+    });
+
+    $(document).on('click', '#newProduct', function (event) {
+      event.preventDefault();
+      $.ajax({
+        url: `/products/new`,
+        type: 'GET',
+        dataType: "script",
+        success: function (response) {
+          // Append the popup content to the body
+          $('body').append('<div id="popup-overlay"></div>');
+          $('#popup-overlay').prepend("<div class='popup-form'><div class='popup-header'> New Product </div></div>");
+          $('.popup-form').append(response);
+
+          $('#popup-overlay').fadeIn();
+        },
+        error: function (xhr) {
+          alert('Failed to load popup content.');
+        }
+      });
+    });
+
+    $(document).on('click', '#close-popup', function () {
+      $('#popup-overlay').fadeOut(function () {
+        $(this).remove();
+      });
+    });
+  });
+
+</script>

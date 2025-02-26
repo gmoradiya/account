@@ -6,9 +6,12 @@ pin "application", preload: true
 pin "jspdf", to: "lib/jspdf.umd.min.js"
 pin "pdfjs", to: "lib/pdf.min.js"
 pin "pdfworker", to: "lib/pdf.worker.min.js"
-pin "jquery", to: "lib/jquery-3.7.1.min.js" , preload: true # @3.7.1
+pin "jquery", to: "lib/jquery-3.7.1.min.js", preload: true # @3.7.1
 
 pin "select2", to: "lib/select2.min.js" # @4.1.0
 # pin "select2-css", to: "select2.min.css"
 pin "bootstrap", to: "lib/bootstrap.min.js" # @4.1.0
 
+pin "@rails/ujs", to: "https://cdn.skypack.dev/@rails/ujs"
+
+# pin "@rails/ujs", to: "lib/rails-ujs.js", preload: true

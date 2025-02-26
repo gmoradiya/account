@@ -1,0 +1,278 @@
+<%= form_with(model: sales_return_invoice, local: true) do |f| %>
+    <% if sales_return_invoice.errors.any? %>
+    <div class="errors">
+      <h2><%= pluralize(sales_return_invoice.errors.count, "error") %> prohibited this sales_return_invoice from being saved:</h2>
+      <ul>
+        <% sales_return_invoice.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class='form-details'>
+    <div class="form-group">
+      <%= f.label :bill_no, class: 'label' %>
+      <%= f.text_field :bill_no, value: sales_return_invoice.bill_no.nil? ? sales_return_invoice.generate_bill_no : sales_return_invoice.bill_no, required: true, class: 'input-field' %>
+    </div>
+    <%= f.hidden_field :bill_type, value: 'with_gst', class: 'bill_type' %>
+
+    <div class="form-group">
+      <%= f.label :sales_invoice, class: 'label' %>
+      <%= f.select :sales_invoice_id, SalesInvoice.where(id: sales_return_invoice&.sales_invoice_id).collect { |si| [si.bill_no, si.id] }, { include_blank: 'Select Customer', selected: sales_return_invoice&.sales_invoice_id }, class: 'input-field searchable-select-sales-invoice', id: "" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :date, class: 'label' %>
+      <%= f.date_field :date, required: true, value: sales_return_invoice.date || Date.today, class: 'input-field' %>
+    </div>
+    <div class="form-group">
+      <%= f.label :billing_address, class: 'label' %>
+      <%= f.text_area :billing_address, required: true, class: 'billing-address input-field', rows: 2 %>
+
+    </div>
+    <div class="form-group">
+      <%= f.label :delivery_address, class: 'label' %>
+      <%= f.text_area :delivery_address, required: true, class: 'delivery-address input-field', rows: 2 %>
+    </div>
+  </div>
+
+  <h3>Products</h3>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>
+            Product
+            <%= link_to "#", id: 'newProduct' do%> 
+              + 
+            <%end%>
+          </th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <%if !f.object.persisted?%>
+            <th>Chalan</th>
+          <%end%>
+          <th>Total</th>
+          <th>CGST(%) </th>
+          <th>CGST</th>
+          <th>SGST (%)</th>
+          <th>SGST</th>
+          <th>Discount (%)</th>
+          <th>Discount</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="products">
+        <%= f.fields_for :sales_return_inventories do |product_form| %>
+          <%= render 'product_fields', f: product_form %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <button type="button" class='btn btn-followup mt-10' id="add-product">Add Product</button>
+
+  <div class='form-group'>
+    <center><%= f.submit "Save Invoice", class: 'btn btn-primary' %></center>
+  </div>
+<% end %>
+
+<script>
+  function handleProductChange(event) {
+    let productField = event.target;
+    let value = productField.value;
+    let row = event.target.closest(".product-fields");
+    let priceField = row.querySelector(".price");
+    let cgstPercentageField = row.querySelector(".cgst_percentage");
+    let sgstPercentageField = row.querySelector(".sgst_percentage");
+    let quantityField = row.querySelector(".quantity");
+    let invoiceableField = row.querySelector(".searchable-select-invoiceable");
+    let billTypeField = document.querySelector("#bill_types");
+
+    $.ajax({
+      url: `/products/${value}/info`,
+      type: 'GET',
+      dataType: 'json',
+      success: (data) => {
+        priceField.value = data.price || 0.0;
+        cgstPercentageField.value = (data.hsn && !billTypeField.checked) ? data.hsn.cgst : 0.0;
+        sgstPercentageField.value = (data.hsn && !billTypeField.checked) ? data.hsn.sgst : 0.0;
+        quantityField.focus();
+        quantityField.select();
+      },
+      error: (xhr, status, error) => {
+        console.error('Error fetching product:', error);
+      },
+    });
+
+    let url = $("#invoice_type:checked").length == 1  ? `/products/${value}/job_invoices_list` : `/products/${value}/purchase_invoices_list`;
+
+    $(invoiceableField).select2({
+      placeholder: "Search",
+      allowClear: true,
+      ajax: {
+        url: url,  // The route for searching products
+        dataType: 'json',
+        delay: 250,  // Delay before the request is sent
+        data: function (params) {
+          return {
+            q: params.term  // Send the search query
+          };
+        },
+        processResults: function (data) {
+          return {
+            results: data.invoices.map(function(invoice) {
+              return {
+                id: invoice.id,
+                text: invoice.bill_no
+              };
+            })
+          };
+        }
+      }
+   });
+  }
+
+  function handleCustomerChange(event) {
+    let salesInvoiceField = event.target;
+    let value = salesInvoiceField.value;
+    let row = event.target.closest(".form-details");
+    let billingAddressField = row.querySelector(".billing-address");
+    let deliveryAddressField = row.querySelector(".delivery-address");
+
+    let customerId = 0;
+    $.ajax({
+      url: `/sales_invoices/${value}/info`,
+      type: 'GET',
+      dataType: 'json',
+      success: (data) => {
+        $.ajax({
+          url: `/customers/${data.customer_id}/info`,
+          type: 'GET',
+          dataType: 'json',
+          success: (data) => {
+            billingAddressField.value = data.billing_address ? data.billing_address.full_address : 0.0;
+            deliveryAddressField.value = data.delivery_address ? data.delivery_address.full_address : 0.0;
+           },
+          error: (xhr, status, error) => {
+            console.error('Error fetching customer:', error);
+          },
+        });
+      },
+      error: (xhr, status, error) => {
+        console.error('Error fetching customer:', error);
+      },
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    $('.searchable-select-sales-invoice').select2({
+      placeholder: "Search Sales Invoice",
+      allowClear: true,
+      ajax: {
+        url: "<%= search_sales_invoices_path %>",  // The route for searching products
+        dataType: 'json',
+        delay: 250,  // Delay before the request is sent
+        data: function (params) {
+          return {
+            q: params.term  // Send the search query
+          };
+        },
+        processResults: function (data) {
+          return {
+            results: data.invoices.map(function(sales_invoice) {
+              return {
+                id: sales_invoice.id,
+                text: sales_invoice.bill_no
+              };
+            })
+          };
+        }
+      }
+    });
+
+    function initializeSelect2() {
+      $('.searchable-select').select2({
+        placeholder: "Search Product",
+        allowClear: true,
+        ajax: {
+          url: "<%= search_products_path %>",  // The route for searching products
+          dataType: 'json',
+          delay: 250,  // Delay before the request is sent
+          data: function (params) {
+            return {
+              q: params.term  // Send the search query
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data.products.map(function(product) {
+                return {
+                  id: product.id,
+                  text: product.name
+                };
+              })
+            };
+          }
+        }
+      });
+    }
+
+    $(document).on('change', '[name="sales_return_invoice[sales_return_inventories_attributes][0][product_id]"]', function(event) {
+      handleProductChange(event);
+    });
+
+    $(document).on('change', '[name="sales_return_invoice[sales_invoice_id]"]', function(event) {
+      handleCustomerChange(event);
+    });
+
+    initializeSelect2();
+
+    document.getElementById("add-product").addEventListener("click", function() {
+      let productsTable = document.getElementById("products");
+      let newRow = document.querySelector(".product-fields").cloneNode(true);
+
+      newRow.querySelectorAll(".select2-container").forEach(function(select2Container) {
+        select2Container.remove();  // Remove the select2 container completely
+      });
+
+      // Destroy select2 for the cloned select field
+      newRow.querySelectorAll(".searchable-select").forEach(function(select) {
+        $(select).select2('destroy');  // Destroy the existing select2 instance
+        $(select).removeClass('select2-hidden-accessible');  // Remove any extra select2 classes
+        $(select).removeAttr('aria-hidden'); // Remove aria-hidden
+        $(select).removeAttr('data-select2-id'); // Remove select2 data attributes
+      });
+
+      let timestamp = new Date().getTime();
+
+      newRow.innerHTML = newRow.innerHTML.replace(/\[\d+\]/g, `[${timestamp}]`);
+
+      newRow.querySelectorAll("input").forEach(input => {
+        if(input.className != 'id'){
+          input.value = '0.0';  // Clear the value of the input fields
+        }
+      });
+
+      newRow.querySelectorAll("select").forEach(select => {
+        select.selectedIndex = 0;  // Reset select option to the first one (Select Product)
+        $(select).val(null).trigger('change');  // Clear select2 selection
+      });
+
+      productsTable.appendChild(newRow);
+
+      $(document).on('change', '[name="sales_return_invoice[sales_return_inventories_attributes]' + `[${timestamp}]` + '[product_id]"]', function(event) {
+          handleProductChange(event);
+      });
+
+      initializeSelect2();
+    });
+
+    document.addEventListener("click", function(event) {
+      if (event.target.classList.contains("remove-product")) {
+        event.target.closest(".product-fields").remove();
+      }
+    });
+  });
+</script>

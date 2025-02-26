@@ -1,0 +1,55 @@
+<center><h1>Sales Invoices</h1></center>
+
+<%= link_to 'New', new_sales_invoice_path, class: 'btn btn-primary mb-10' %>
+<%= link_to "Download CSV", sales_invoices_path(format: :csv), class: "btn btn-primary" %>
+
+<div class="search-bar">
+  <%= form_with url: sales_invoices_path, method: :get, local: true do %>
+    <input type="text" name="query" placeholder="Search by invoice number" value="<%= params[:query] %>">
+    <button type="submit">Search</button>
+  <% end %>
+</div>
+
+<div class="patient-table">
+
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Invoice Number</th>
+        <th>Date</th>
+        <th>Customer Name</th>
+        <th>Total Amount</th>
+        <th>Received Amount</th>
+        <th>Remaining Amount</th>
+        <th>Payment Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sales_invoices.each_with_index do |s_invoice, ind| %>
+        <tr>
+          <td><%= ind + 1 %></td>
+
+          <td><%= s_invoice.bill_no %></td>
+          <td><%= s_invoice.date %></td>
+          <td><%= s_invoice.customer.name %></td>
+          <td><%= s_invoice.grand_total %></td>
+          <td><%= s_invoice.received_amount %></td>
+          <td><%= s_invoice.grand_total-s_invoice.received_amount.to_f %></td>
+          <td><%= s_invoice.payment_status %></td>
+          <td>
+            <%= link_to 'View', sales_invoice_path(s_invoice), class: 'btn btn-view' %>
+            <%= link_to 'Edit', edit_sales_invoice_path(s_invoice), class: 'btn btn-edit' %>
+            <%= link_to 'Delete', sales_invoice_path(s_invoice), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
+            <%= link_to 'Payment', new_payment_path(billable_id: s_invoice.id, billable_type: 'SalesInvoice'), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-followup' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <%= paginate @sales_invoices %>
+</div>

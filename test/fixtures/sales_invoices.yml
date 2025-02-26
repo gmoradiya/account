@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  bill_no: MyString
+  customer: one
+  date: 2025-02-12
+  total: 9.99
+  cgst: 9.99
+  sgst: 9.99
+  grand_total: 9.99
+
+two:
+  bill_no: MyString
+  customer: two
+  date: 2025-02-12
+  total: 9.99
+  cgst: 9.99
+  sgst: 9.99
+  grand_total: 9.99

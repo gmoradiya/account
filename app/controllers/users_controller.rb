@@ -4,12 +4,11 @@ class UsersController < ApplicationController
   before_action :check_admin_role
 
   def index
-    if params[:query].present?
-      @users = User.where("name LIKE ? OR email LIKE ? ", "%#{params[:query]}%", "%#{params[:query]}%").where.not(role: 'super_admin')
-    else
-      @users = User.where.not(role: 'super_admin')
-    end
+    @users = organization.users.where.not(role: "super_admin")
 
+    if params[:query].present?
+      @users = @users.where("name LIKE ? OR email LIKE ? ", "%#{params[:query]}%", "%#{params[:query]}%")
+    end
     @users = @users.order(created_at: :desc).page(params[:page]).per(10) # Paginate results
   end
 
@@ -23,7 +22,8 @@ class UsersController < ApplicationController
   def create_user
     @user = User.new(user_params)
     if @user.save
-      redirect_to @user, notice: 'User was successfully created.'
+      @user.update(organization: organization)
+      redirect_to @user, notice: "User was successfully created."
     else
       render :new
     end
@@ -34,7 +34,7 @@ class UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      redirect_to @user, notice: 'User was successfully updated.'
+      redirect_to @user, notice: "User was successfully updated."
     else
       render :edit
     end
@@ -42,25 +42,22 @@ class UsersController < ApplicationController
 
   def destroy
     @user.destroy
-    redirect_to users_url, notice: 'User was successfully destroyed.'
+    redirect_to users_url, notice: "User was successfully destroyed."
   end
 
   def search
-    users = User.where("name iLIKE ?", "%#{params[:q]}%").first(5)
-
+    users = organization.users.where("name iLIKE ?", "%#{params[:q]}%").first(5)
     render json: { users: users.map { |user| { id: user.id, name: "#{user.name}"  } } }
   end
-
 
   def info
     render json: @user
   end
 
-
   private
 
   def set_user
-    @user = User.find(params[:id])
+    @user = organization.users.find_by(id: params[:id])
   end
 
   def user_params

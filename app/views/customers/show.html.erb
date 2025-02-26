@@ -1,0 +1,112 @@
+<h1 class="patient-title">Customer Details</h1>
+<div class="customer-details">
+  <div class="">
+    <p><strong>Name:</strong> <%= @customer.name %> </p>
+    <p><strong>Phone Number:</strong> <%= @customer.phone_number %></p>
+    <p><strong>Email:</strong> <%= @customer.email %></p>
+  </div>
+  <div class="patient-actions">
+    <%= link_to 'Edit', edit_customer_path(@customer), class: 'btn btn-warning' %>
+  </div>
+</div>
+
+  <%= form_with model: @customer, url: customer_path(@customer), method: :patch do |f| %>
+    <h2>Billing Address</h2>
+    <%= f.fields_for :billing_address do |ba| %>
+      <%= ba.hidden_field :address_type, value: 'billing' %>
+      
+      <div class="form-group">
+        <%= ba.label :address, class: 'label' %>
+        <%= ba.text_area :address, class: 'input-field', id: 'billing_address_address' %>
+      </div>
+
+      <div class="form-group">
+        <%= ba.label :country_id, class: 'label' %>
+        <%= ba.select :country_id, Country.pluck(:name, :id), {selected: ba.object.country_id || default_country.id}, {class: "input-field", id: 'billing_address_country'} %>
+      </div>
+
+      <div class="form-group">
+        <%= ba.label :state_id, class: 'label' %>
+        <%= ba.select :state_id, State.pluck(:name, :id), {selected: ba.object.state_id || default_state.id}, {class: "input-field", id: 'billing_address_state'} %>
+      </div>
+
+      <div class="form-group">
+        <%= ba.label :city, class: 'label' %>
+        <%= ba.text_field :city, class: 'input-field', id: 'billing_address_city' %>
+      </div>
+
+      <div class="form-group">
+        <%= ba.label :pincode, class: 'label' %>
+        <%= ba.text_field :pincode, class: 'input-field', id: 'billing_address_pincode' %>
+      </div>
+    <% end %>
+
+    <h2>Delivery Address</h2>
+    <!-- Checkbox to copy billing address -->
+    <div class="form-group">
+      <%= check_box_tag 'copy_address', '1', false, id: 'copy_address_checkbox' %>
+      <%= label_tag 'copy_address_checkbox', 'Same as Billing Address' %>
+    </div>
+
+    <%= f.fields_for :delivery_address do |da| %>
+      <%= da.hidden_field :address_type, value: 'delivery' %>
+      <div class="form-group">
+        <%= da.label :address, class: 'label' %>
+        <%= da.text_area :address, class: 'input-field', id: 'delivery_address_address' %>
+      </div>
+
+      <div class="form-group">
+        <%= da.label :country_id, class: 'label' %>
+        <%= da.select :country_id, Country.pluck(:name, :id), {selected: da.object.country_id || default_country.id}, {class: "input-field", id: 'delivery_address_country'} %>
+      </div>
+
+      <div class="form-group">
+        <%= da.label :state_id, class: 'label' %>
+        <%= da.select :state_id, State.pluck(:name, :id), {selected: da.object.state_id || default_state.id}, {class: "input-field", id: 'delivery_address_state'} %>
+      </div>
+
+      <div class="form-group">
+        <%= da.label :city, class: 'label' %>
+        <%= da.text_field :city, class: 'input-field', id: 'delivery_address_city' %>
+      </div>
+
+      <div class="form-group">
+        <%= da.label :pincode, class: 'label' %>
+        <%= da.text_field :pincode, class: 'input-field', id: 'delivery_address_pincode' %>
+      </div>
+    <% end %>
+
+    <%= f.submit "Save Addresses" %>
+  <% end %>
+
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const checkbox = document.getElementById('copy_address_checkbox');
+    
+    checkbox.addEventListener('change', function() {
+      // If checkbox is checked, copy billing values to delivery
+      if (checkbox.checked) {
+        document.getElementById('delivery_address_address').value =
+          document.getElementById('billing_address_address').value;
+        document.getElementById('delivery_address_country').value =
+          document.getElementById('billing_address_country').value;
+        document.getElementById('delivery_address_state').value =
+          document.getElementById('billing_address_state').value;
+        document.getElementById('delivery_address_city').value =
+          document.getElementById('billing_address_city').value;
+        document.getElementById('delivery_address_pincode').value =
+          document.getElementById('billing_address_pincode').value;
+      } else {
+        // Optionally clear delivery fields if checkbox is unchecked
+        document.getElementById('delivery_address_address').value = "";
+        document.getElementById('delivery_address_country').value = "";
+        document.getElementById('delivery_address_state').value = "";
+        document.getElementById('delivery_address_city').value = "";
+        document.getElementById('delivery_address_pincode').value = "";
+      }
+    });
+  });
+
+</script>

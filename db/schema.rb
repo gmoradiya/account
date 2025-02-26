@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_22_085637) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_26_045158) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,66 +42,336 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_22_085637) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "appointments", force: :cascade do |t|
-    t.bigint "patient_id"
-    t.datetime "date"
-    t.string "patient_name"
-    t.string "phone_number"
-    t.integer "appointment_type", default: 0, null: false
-    t.integer "appointment_status", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["patient_id"], name: "index_appointments_on_patient_id"
-  end
-
-  create_table "follow_ups", force: :cascade do |t|
-    t.bigint "patient_id", null: false
-    t.bigint "appointment_id"
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["appointment_id"], name: "index_follow_ups_on_appointment_id"
-    t.index ["patient_id"], name: "index_follow_ups_on_patient_id"
-    t.index ["user_id"], name: "index_follow_ups_on_user_id"
-  end
-
-  create_table "medicines", force: :cascade do |t|
-    t.string "name"
-    t.string "dosage"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "patients", force: :cascade do |t|
-    t.string "name"
+  create_table "addresses", force: :cascade do |t|
     t.text "address"
-    t.date "date_of_birth"
-    t.string "phone_number"
-    t.string "case_number"
-    t.string "patient_type"
-    t.decimal "weight"
-    t.string "reference_by"
-    t.string "email"
-    t.string "occupation"
-    t.text "chief_complaints"
-    t.string "sex"
-    t.date "date_of_signature"
+    t.string "city"
+    t.string "pincode"
+    t.bigint "state_id", null: false
+    t.bigint "country_id", null: false
+    t.integer "address_type"
+    t.string "addressable_type", null: false
+    t.bigint "addressable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
+    t.index ["country_id"], name: "index_addresses_on_country_id"
+    t.index ["state_id"], name: "index_addresses_on_state_id"
+  end
+
+  create_table "countries", force: :cascade do |t|
+    t.string "name"
+    t.string "iso_code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "prescriptions", force: :cascade do |t|
-    t.bigint "appointment_id", null: false
-    t.bigint "follow_up_id", null: false
-    t.bigint "medicine_id", null: false
-    t.string "dosage"
-    t.string "note"
+  create_table "customers", force: :cascade do |t|
+    t.string "name"
+    t.string "owner_name"
+    t.string "phone_number"
+    t.string "alternate_phone_number"
+    t.string "email"
+    t.string "gst_detail"
+    t.string "pan_number"
+    t.bigint "organization_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["appointment_id"], name: "index_prescriptions_on_appointment_id"
-    t.index ["follow_up_id"], name: "index_prescriptions_on_follow_up_id"
-    t.index ["medicine_id"], name: "index_prescriptions_on_medicine_id"
+    t.index ["organization_id"], name: "index_customers_on_organization_id"
+  end
+
+  create_table "hsns", force: :cascade do |t|
+    t.string "schedule"
+    t.string "s_no"
+    t.text "code"
+    t.string "description"
+    t.string "chapter_heading"
+    t.decimal "sgst"
+    t.decimal "cgst"
+    t.decimal "gst"
+    t.decimal "cess"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "job_inventories", force: :cascade do |t|
+    t.bigint "job_invoice_id", null: false
+    t.bigint "product_id", null: false
+    t.decimal "quantity"
+    t.decimal "remaining_quantity", default: "0.0"
+    t.decimal "unit_price"
+    t.decimal "total"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_invoice_id"], name: "index_job_inventories_on_job_invoice_id"
+    t.index ["product_id"], name: "index_job_inventories_on_product_id"
+  end
+
+  create_table "job_invoices", force: :cascade do |t|
+    t.string "bill_no"
+    t.date "date"
+    t.bigint "customer_id", null: false
+    t.decimal "total"
+    t.bigint "organization_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_job_invoices_on_customer_id"
+    t.index ["organization_id"], name: "index_job_invoices_on_organization_id"
+  end
+
+  create_table "organizations", force: :cascade do |t|
+    t.string "name"
+    t.text "full_address"
+    t.string "phone_number"
+    t.string "gst_detail"
+    t.string "bank_name"
+    t.string "account_number"
+    t.string "ifcs_code"
+    t.string "branch"
+    t.string "financial_year", default: ""
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "country_id", null: false
+    t.bigint "state_id", null: false
+    t.index ["country_id"], name: "index_organizations_on_country_id"
+    t.index ["state_id"], name: "index_organizations_on_state_id"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.string "billable_type", null: false
+    t.bigint "billable_id", null: false
+    t.decimal "amount"
+    t.date "date"
+    t.string "payment_detail"
+    t.integer "payment_mode", default: 0
+    t.string "bill_no"
+    t.bigint "organization_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["billable_type", "billable_id"], name: "index_payments_on_billable"
+    t.index ["organization_id"], name: "index_payments_on_organization_id"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "name"
+    t.string "barcode", default: ""
+    t.string "description"
+    t.bigint "hsn_id"
+    t.decimal "price"
+    t.decimal "quantity", default: "0.0"
+    t.bigint "organization_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["hsn_id"], name: "index_products_on_hsn_id"
+    t.index ["organization_id"], name: "index_products_on_organization_id"
+  end
+
+  create_table "purchase_inventories", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "purchase_invoice_id", null: false
+    t.decimal "price", default: "0.0"
+    t.decimal "quantity", default: "0.0"
+    t.decimal "remaining_quantity", default: "0.0"
+    t.decimal "total", default: "0.0"
+    t.decimal "cgst_percentage", default: "0.0"
+    t.decimal "cgst", default: "0.0"
+    t.decimal "sgst_percentage", default: "0.0"
+    t.decimal "sgst", default: "0.0"
+    t.decimal "discount_percentage", default: "0.0"
+    t.decimal "discount", default: "0.0"
+    t.decimal "sub_total", default: "0.0"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_purchase_inventories_on_product_id"
+    t.index ["purchase_invoice_id"], name: "index_purchase_inventories_on_purchase_invoice_id"
+  end
+
+  create_table "purchase_invoices", force: :cascade do |t|
+    t.string "bill_no"
+    t.bigint "supplier_id", null: false
+    t.date "date"
+    t.decimal "total"
+    t.decimal "cgst"
+    t.decimal "sgst"
+    t.decimal "discount"
+    t.integer "payment_status", default: 0
+    t.decimal "grand_total"
+    t.decimal "paid_amount"
+    t.text "billing_address"
+    t.text "delivery_address"
+    t.bigint "organization_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_purchase_invoices_on_organization_id"
+    t.index ["supplier_id"], name: "index_purchase_invoices_on_supplier_id"
+  end
+
+  create_table "purchase_return_inventories", force: :cascade do |t|
+    t.bigint "product_id"
+    t.bigint "purchase_return_invoice_id"
+    t.decimal "price", default: "0.0"
+    t.decimal "quantity", default: "0.0"
+    t.decimal "remaining_quantity", default: "0.0"
+    t.decimal "total", default: "0.0"
+    t.decimal "cgst_percentage", default: "0.0"
+    t.decimal "cgst", default: "0.0"
+    t.decimal "sgst_percentage", default: "0.0"
+    t.decimal "sgst", default: "0.0"
+    t.decimal "discount_percentage", default: "0.0"
+    t.decimal "discount", default: "0.0"
+    t.decimal "sub_total", default: "0.0"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_purchase_return_inventories_on_product_id"
+    t.index ["purchase_return_invoice_id"], name: "idx_on_purchase_return_invoice_id_8aeb403d61"
+  end
+
+  create_table "purchase_return_invoices", force: :cascade do |t|
+    t.bigint "organization_id"
+    t.bigint "purchase_invoice_id"
+    t.bigint "supplier_id", null: false
+    t.string "bill_no"
+    t.date "date"
+    t.decimal "total"
+    t.decimal "cgst"
+    t.decimal "sgst"
+    t.decimal "discount"
+    t.decimal "grand_total"
+    t.decimal "received_amount", default: "0.0"
+    t.integer "payment_status", default: 0
+    t.text "billing_address"
+    t.text "delivery_address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_purchase_return_invoices_on_organization_id"
+    t.index ["purchase_invoice_id"], name: "index_purchase_return_invoices_on_purchase_invoice_id"
+    t.index ["supplier_id"], name: "index_purchase_return_invoices_on_supplier_id"
+  end
+
+  create_table "sales_inventories", force: :cascade do |t|
+    t.bigint "sales_invoice_id", null: false
+    t.bigint "product_id", null: false
+    t.decimal "price", default: "0.0"
+    t.decimal "quantity", default: "0.0"
+    t.decimal "total", default: "0.0"
+    t.decimal "cgst_percentage", default: "0.0"
+    t.decimal "cgst", default: "0.0"
+    t.decimal "sgst_percentage", default: "0.0"
+    t.decimal "sgst", default: "0.0"
+    t.decimal "discount_percentage", default: "0.0"
+    t.decimal "discount", default: "0.0"
+    t.decimal "sub_total", default: "0.0"
+    t.bigint "organization_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "invoiceable_type"
+    t.bigint "invoiceable_id"
+    t.index ["invoiceable_type", "invoiceable_id"], name: "index_sales_inventories_on_invoiceable"
+    t.index ["organization_id"], name: "index_sales_inventories_on_organization_id"
+    t.index ["product_id"], name: "index_sales_inventories_on_product_id"
+    t.index ["sales_invoice_id"], name: "index_sales_inventories_on_sales_invoice_id"
+  end
+
+  create_table "sales_invoices", force: :cascade do |t|
+    t.string "bill_no"
+    t.bigint "customer_id", null: false
+    t.date "date"
+    t.decimal "total"
+    t.decimal "cgst"
+    t.decimal "sgst"
+    t.decimal "discount"
+    t.decimal "grand_total"
+    t.decimal "received_amount", default: "0.0"
+    t.integer "payment_status", default: 0
+    t.text "billing_address", default: ""
+    t.text "delivery_address", default: ""
+    t.string "gst_code"
+    t.integer "bill_type", default: 0
+    t.bigint "organization_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_sales_invoices_on_customer_id"
+    t.index ["organization_id"], name: "index_sales_invoices_on_organization_id"
+  end
+
+  create_table "sales_return_inventories", force: :cascade do |t|
+    t.bigint "sales_return_invoice_id"
+    t.bigint "product_id", null: false
+    t.decimal "price", default: "0.0"
+    t.decimal "quantity", default: "0.0"
+    t.decimal "total", default: "0.0"
+    t.decimal "cgst_percentage", default: "0.0"
+    t.decimal "cgst", default: "0.0"
+    t.decimal "sgst_percentage", default: "0.0"
+    t.decimal "sgst", default: "0.0"
+    t.decimal "discount_percentage", default: "0.0"
+    t.decimal "discount", default: "0.0"
+    t.decimal "sub_total", default: "0.0"
+    t.bigint "organization_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "invoiceable_type"
+    t.bigint "invoiceable_id"
+    t.index ["invoiceable_type", "invoiceable_id"], name: "index_sales_return_inventories_on_invoiceable"
+    t.index ["organization_id"], name: "index_sales_return_inventories_on_organization_id"
+    t.index ["product_id"], name: "index_sales_return_inventories_on_product_id"
+    t.index ["sales_return_invoice_id"], name: "index_sales_return_inventories_on_sales_return_invoice_id"
+  end
+
+  create_table "sales_return_invoices", force: :cascade do |t|
+    t.string "bill_no"
+    t.bigint "customer_id", null: false
+    t.date "date"
+    t.decimal "total"
+    t.decimal "cgst"
+    t.decimal "sgst"
+    t.decimal "discount"
+    t.decimal "grand_total"
+    t.decimal "paid_amount", default: "0.0"
+    t.integer "payment_status", default: 0
+    t.text "billing_address", default: ""
+    t.text "delivery_address", default: ""
+    t.string "gst_code"
+    t.integer "bill_type", default: 0
+    t.bigint "organization_id"
+    t.bigint "sales_invoice_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_sales_return_invoices_on_customer_id"
+    t.index ["organization_id"], name: "index_sales_return_invoices_on_organization_id"
+    t.index ["sales_invoice_id"], name: "index_sales_return_invoices_on_sales_invoice_id"
+  end
+
+  create_table "states", force: :cascade do |t|
+    t.bigint "country_id", null: false
+    t.string "name"
+    t.string "code"
+    t.string "gst_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["country_id"], name: "index_states_on_country_id"
+  end
+
+  create_table "suppliers", force: :cascade do |t|
+    t.string "name"
+    t.string "owner_name"
+    t.string "phone_number"
+    t.string "alternate_phone_number"
+    t.string "email"
+    t.string "gst_detail"
+    t.string "pan_number"
+    t.bigint "organization_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_suppliers_on_organization_id"
+  end
+
+  create_table "user_organizations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "organization_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_user_organizations_on_organization_id"
+    t.index ["user_id"], name: "index_user_organizations_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -121,4 +391,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_22_085637) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "user_organizations", "organizations"
+  add_foreign_key "user_organizations", "users"
 end

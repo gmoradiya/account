@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Clinic Follow Up" %></title>
+    <title><%= content_for(:title) || "SHIV ACCOUNT" %></title>
     <%= favicon_link_tag asset_path('favicon.ico'), :rel => 'icon', :type =>  'image/png' %>
-<%#= favicon_link_tag 'favicon.png', type: 'image/png' %>
+    <%#= favicon_link_tag 'favicon.png', type: 'image/png' %>
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -22,9 +22,9 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app %>
+
     <%= javascript_importmap_tags %>
   </head>
-
 
   <body>
     <div class="wrapper">
@@ -32,8 +32,25 @@
       <header class="site-header">
         <div class="container">
           <div class="header-logo">
-            <%= link_to "AASTHA HOMEOPATHIC CLINIC", root_path, class: "logo" %>
+            <div class>
+            <%= link_to "SHIV ACCOUNT", root_path, class: "logo" %>
+            </div>
+            
           </div>
+          <nav>
+            <%if current_user %>
+              <%= form_with url: request.path, method: :get, local: true do %>
+                <label for="financial_year">Financial Year</label>
+                <%= select_tag :financial_year, options_for_select(financial_year_options, organization.financial_year), onchange: "this.form.submit();" %>
+              <% end %>
+
+              <%= form_with url: request.path, method: :get, local: true do %>
+                <label for="organization_id">Organizations</label>
+                <%= select_tag :organization_id, options_for_select(current_user.organizations.pluck(:name, :id), organization.id),{prompt: 'Select Organization', onchange: "this.form.submit();"} %>
+              <% end %>
+            <% end %>
+          </nav>
+
           <button class="nav-toggle" aria-label="Toggle navigation">
             <span class="hamburger"></span>
           </button>
@@ -41,8 +58,12 @@
             <ul>
               <% if user_signed_in? %>
                 <li class="navbar-item"><%= link_to 'Home', root_path, class: 'navbar-link' %></li>
-                <li class="navbar-item"><%= link_to 'Patients', patients_path, class: 'navbar-link' %></li>
-                <li class="navbar-item"><%= link_to 'Medicine', medicines_path, class: 'navbar-link' %></li>
+                <li class="navbar-item"><%= link_to 'Customers', customers_path, class: 'navbar-link' %></li>
+                <li class="navbar-item"><%= link_to 'Suppliers', suppliers_path, class: 'navbar-link' %></li>
+                <li class="navbar-item"><%= link_to 'Products', products_path, class: 'navbar-link' %></li>
+                <li class="navbar-item"><%= link_to 'HSNs', hsns_path, class: 'navbar-link' %></li>
+                <li class="navbar-item"><%= link_to 'Countries', countries_path, class: 'navbar-link' %></li>
+                <li class="navbar-item"><%= link_to 'States', states_path, class: 'navbar-link' %></li>
 
                 <%if ['admin', 'super_admin'].include?(current_user.role)%>
                   <li class="navbar-item"><%= link_to 'Users', users_path, class: 'navbar-link' %></li>
@@ -75,7 +96,7 @@
       <%if !(params[:controller] == 'follow_ups' && params[:action] == 'new')%>
       <footer class="site-footer">
         <div class="container">
-          <p>&copy; <%= Time.now.year %> AASTHA HOMEOPATHIC CLINIC. All rights reserved.</p>
+          <p>&copy; <%= Time.now.year %> SHIV ACCOUNT. All rights reserved.</p>
           <p>Developed by Gautam Moradiya</p>
         </div>
       </footer>

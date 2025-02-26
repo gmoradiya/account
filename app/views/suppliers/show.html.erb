@@ -1,0 +1,14 @@
+<h1 class="supplier-title">Supplier Details</h1>
+
+<div class="supplier-details">
+  <div class="supplier-info">
+    <p><strong>Name:</strong> <%= @supplier.name %> </p>
+    <p><strong>Phone Number:</strong> <%= @supplier.phone_number %></p>
+    <p><strong>Email:</strong> <%= @supplier.email %></p>
+  </div>
+
+  <div class="supplier-actions">
+    <%= link_to 'Edit', edit_supplier_path(@supplier), class: 'btn btn-warning' %>
+    <%= link_to 'Back to List', suppliers_path, class: 'btn btn-secondary' %>
+  </div>
+</div>

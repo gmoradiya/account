@@ -1,0 +1,5 @@
+<h1 class="form-title">New Payment</h1>
+
+<%= render 'form', payment: @payment, is_remote: false, billable_type: params[:billable_type], billable_id: params[:billable_id] %>
+
+<%= link_to 'Back', root_path, class: 'btn btn-secondary' %>

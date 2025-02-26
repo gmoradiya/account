@@ -1,0 +1,13 @@
+<h1 class="patient-title">Country Details</h1>
+
+<div class="patient-details">
+  <div class="patient-info">
+    <p><strong>Name:</strong> <%= @country.name %> </p>
+    <p><strong>ISO Code:</strong> <%= @country.iso_code %> </p>
+  </div>
+
+  <div class="patient-actions">
+    <%= link_to 'Edit', edit_country_path(@country), class: 'btn btn-warning' %>
+    <%= link_to 'Back to List', countries_path, class: 'btn btn-secondary' %>
+  </div>
+</div>

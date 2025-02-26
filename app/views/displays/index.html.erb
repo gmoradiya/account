@@ -1,0 +1,143 @@
+
+<div class='display'>
+
+  <div class="icon-container">
+    <div class="icon">
+      <%= link_to sales_invoices_path do %>
+        <div class="icon-content">
+          <%= image_tag 'sales.png' %>
+          <span>Sales Invoices</span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="icon">
+      <%= link_to new_sales_invoice_path do %>
+        <div class="icon-content">
+          <%= image_tag 'new_sales.png' %>
+          <span>New Sales Invoice</span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="icon">
+      <%= link_to sales_return_invoices_path do %>
+        <div class="icon-content">
+          <%= image_tag 'sales_return.png' %>
+          <span>Sales Return Invoices</span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="icon">
+      <%= link_to new_sales_return_invoice_path do %>
+        <div class="icon-content">
+          <%= image_tag 'new_sales_return.png' %>
+          <span>New Sales Return Invoice</span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="icon">
+      <%= link_to purchase_invoices_path do %>
+        <div class="icon-content">
+          <%= image_tag 'purchase.png' %>
+          <span>Purchase Invoices</span>
+        </div>
+      <% end %>
+    </div>
+    <div class="icon">
+      <%= link_to new_purchase_invoice_path do %>
+        <div class="icon-content">
+          <%= image_tag 'new_purchase.png' %>
+          <span>New Purchase Invoice</span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="icon">
+      <%= link_to purchase_return_invoices_path do %>
+        <div class="icon-content">
+          <%= image_tag 'purchase_return.png' %>
+          <span>Purchase Return Invoices</span>
+        </div>
+      <% end %>
+    </div>
+    <div class="icon">
+      <%= link_to new_purchase_return_invoice_path do %>
+        <div class="icon-content">
+          <%= image_tag 'new_purchase_return.png' %>
+          <span>New Purchase Return Invoice</span>
+        </div>
+      <% end %>
+    </div>
+  
+    <div class="icon">
+      <%= link_to job_invoices_path do %>
+        <div class="icon-content">
+          <%= image_tag 'job.png' %>
+          <span>Job Work Invoice</span>
+        </div>
+      <% end %>
+    </div>
+    <div class="icon">
+      <%= link_to new_job_invoice_path do %>
+        <div class="icon-content">
+          <%= image_tag 'new_job.png' %>
+          <span>New Job Work Invoice</span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="icon">
+      <%= link_to customers_path do %>
+        <div class="icon-content">
+          <%= image_tag 'customer.png' %>
+          <span>Customer</span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="icon">
+      <%= link_to suppliers_path do %>
+        <div class="icon-content">
+          <%= image_tag 'supplier.png' %>
+          <span>Supplier</span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="icon">
+      <%= link_to payments_path do %>
+        <div class="icon-content">
+          <%= image_tag 'payment.png' %>
+          <span>Payment</span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="icon">
+      <%= link_to products_path do %>
+        <div class="icon-content">
+          <%= image_tag 'product.png' %>
+          <span>Products</span>
+        </div>
+      <% end %>
+    </div>
+
+  </div>
+
+  <div class='balance-details'>
+    <center>
+      <h1>Gross Sales: <%= @gross_sales %> ₹.</h1>
+      <h1>Gross Purchase: <%= @gross_purchase %> ₹.</h1>
+
+      <h1>GST Paid From Purchase: <%= @gst_paid %> ₹.</h1>
+      <h1>GST Received From Sales: <%= @gst_received %> ₹.</h1>
+      <h1>GST credit: <%= @gst_paid - @gst_received %> ₹.</h1>
+      <h1>Balance After GST Calculation: <%= ((@amount["SalesInvoice"].to_f + @amount["PurchaseReturnInvoice"].to_f) - (@amount["PurchaseInvoice"].to_f + @amount["SalesReturnInvoice"].to_f )) + @gst_paid - @gst_received%>  ₹.</h1>
+      <h1>Balance: <%= ((@amount["SalesInvoice"].to_f + @amount["PurchaseReturnInvoice"].to_f) - (@amount["PurchaseInvoice"].to_f + @amount["SalesReturnInvoice"].to_f )) %> ₹.</h1>
+
+    </center>
+  </div>
+</div>

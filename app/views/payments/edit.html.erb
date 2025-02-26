@@ -1,0 +1,6 @@
+<h1 class="form-title">Edit Payment</h1>
+
+<%= render 'form', payment: @payment, is_remote: false, billable_type: @payment.billable_type, billable_id: @payment.billable_id %>
+
+<%= link_to 'Back', root_path, class: 'btn btn-secondary' %>
+

@@ -1,0 +1,31 @@
+<%= form_with(model: state, local: true) do |form| %>
+  <% if state.errors.any? %>
+    <div class="errors">
+      <h2><%= pluralize(state.errors.count, "error") %> prohibited this state from being saved:</h2>
+      <ul>
+        <% state.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :name, class: 'label' %>
+    <%= form.text_field :name, class: 'input-field' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :code, class: 'label' %>
+    <%= form.text_field :code, class: 'input-field' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :code, class: 'label' %>
+    <%= form.select :country_id, Country.pluck(:name, :id), {selected: state.country_id}, {class: 'input-field'} %>
+  </div>
+
+  <div class="form-group">
+    <%= form.submit 'Save', class: 'btn btn-primary' %>
+  </div>
+<% end %>

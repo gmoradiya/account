@@ -1,0 +1,48 @@
+
+
+<h1>Job Invoices</h1>
+
+<%= link_to 'New', new_job_invoice_path, class: 'btn btn-primary mb-10' %>
+
+<div class="search-bar">
+  <%= form_with url: job_invoices_path, method: :get, local: true do %>
+    <input type="text" name="query" placeholder="Search by invoice number" value="<%= params[:query] %>">
+    <button type="submit">Search</button>
+  <% end %>
+</div>
+
+<div class="patient-table">
+
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Invoice Number</th>
+        <th>Customer Name</th>
+        <th>Action</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <% @job_invoices.each_with_index do |p_invoice, ind| %>
+        <tr>
+          <td><%= ind + 1 %></td>
+
+          <td><%= p_invoice.bill_no %></td>
+          <td><%= p_invoice.customer.name %></td>
+          <td>
+            <%= link_to 'View', job_invoice_path(p_invoice), class: 'btn btn-view' %>
+            <%= link_to 'Edit', edit_job_invoice_path(p_invoice), class: 'btn btn-edit' %>
+            <%= link_to 'Delete', job_invoice_path(p_invoice), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
+            <%= link_to 'Payment', new_payment_path(billable_id: p_invoice.id, billable_type: 'PurchaseInvoice'), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-followup' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <%= paginate @job_invoices %>
+</div>
+

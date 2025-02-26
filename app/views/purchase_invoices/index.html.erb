@@ -1,0 +1,53 @@
+<h1>Purchase Invoices</h1>
+
+<%= link_to 'New', new_purchase_invoice_path, class: 'btn btn-primary mb-10' %>
+<%= link_to "Download CSV", purchase_invoices_path(format: :csv), class: "btn btn-primary" %>
+
+<div class="search-bar">
+  <%= form_with url: purchase_invoices_path, method: :get, local: true do %>
+    <input type="text" name="query" placeholder="Search by invoice number" value="<%= params[:query] %>">
+    <button type="submit">Search</button>
+  <% end %>
+</div>
+
+<div class="patient-table">
+
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Invoice Number</th>
+        <th>Supplier Name</th>
+        <th>Total Amount</th>
+        <th>Paid Amount</th>
+        <th>Payment Status</th>
+        <th>Action</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <% @purchase_invoices.each_with_index do |p_invoice, ind| %>
+        <tr>
+          <td><%= ind + 1 %></td>
+
+          <td><%= p_invoice.bill_no %></td>
+          <td><%= p_invoice.supplier.name %></td>
+          <td><%= p_invoice.grand_total %></td>
+          <td><%= p_invoice.paid_amount %></td>
+          <td><%= p_invoice.payment_status %></td>
+          <td>
+            <%= link_to 'View', purchase_invoice_path(p_invoice), class: 'btn btn-view' %>
+            <%= link_to 'Edit', edit_purchase_invoice_path(p_invoice), class: 'btn btn-edit' %>
+            <%= link_to 'Delete', purchase_invoice_path(p_invoice), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
+            <%= link_to 'Payment', new_payment_path(billable_id: p_invoice.id, billable_type: 'PurchaseInvoice'), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-followup' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <%= paginate @purchase_invoices %>
+</div>
+

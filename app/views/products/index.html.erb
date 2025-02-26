@@ -1,0 +1,50 @@
+<center><h1>Products</h1>
+
+<%= link_to 'New Product', new_product_path, class: 'btn btn-primary mb-10' %>
+</center>
+<div class="search-bar">
+  <%= form_with url: products_path, method: :get, local: true do %>
+    <input type="text" name="query" placeholder="Search by Name" value="<%= params[:query] %>">
+    <button type="submit">Search</button>
+  <% end %>
+</div>
+
+<div class="patient-table">
+
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+
+        <th>Name</th>
+        <th>Description</th>
+        <th>HSN Code</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @products.each_with_index do |product, ind| %>
+        <tr>
+          <td><%= ind + 1 %></td>
+
+          <td><%= product.name %></td>
+          <td><%= product.description %></td>
+          <td><%= product&.hsn&.code %></td>
+          <td><%= product.price %></td>
+          <td><%= product.quantity %></td>
+          <td>
+            <%= link_to 'View', product_path(product), class: 'btn btn-view' %>
+            <%= link_to 'Edit', edit_product_path(product), class: 'btn btn-edit' %>
+            <%= link_to 'Delete', product_path(product), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <%= paginate @products %>
+</div>

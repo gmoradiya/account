@@ -1,0 +1,46 @@
+<center><h1>States</h1>
+
+<%= link_to 'New state', new_state_path, class: 'btn btn-primary mb-10' %>
+</center>
+<div class="search-bar">
+  <%= form_with url: states_path, method: :get, local: true do %>
+    <input type="text" name="query" placeholder="Search by Name or Case Number" value="<%= params[:query] %>">
+    <button type="submit">Search</button>
+  <% end %>
+</div>
+
+<div class="patient-table">
+
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Name</th>
+        <th>Code</th>
+        <th>Country</th>
+        <th>Action</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <% @states.each_with_index do |state, ind| %>
+        <tr>
+          <td><%= ind + 1 %></td>
+
+          <td><%= state.name %></td>
+          <td><%= state.code %></td>
+          <td><%= state.country.name %></td>
+          <td>
+            <%= link_to 'View', state_path(state), class: 'btn btn-view' %>
+            <%= link_to 'Edit', edit_state_path(state), class: 'btn btn-edit' %>
+            <%= link_to 'Delete', state_path(state), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <%= paginate @states %>
+</div>

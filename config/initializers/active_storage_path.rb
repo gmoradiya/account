@@ -12,7 +12,7 @@ Rails.application.config.after_initialize do
         # if attachment.record.class == FollowUp
         #   "patients/#{attachment.record.patient_id}/#{model}/#{record_id}/#{filename.sanitized}"
         # else
-          "#{model}/#{record_id}/#{filename.sanitized}"
+        "#{model}/#{record_id}/#{filename.sanitized}"
         # end
       else
         super # Fallback to default behavior if no associated record is found

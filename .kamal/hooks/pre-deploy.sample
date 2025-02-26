@@ -79,7 +79,6 @@ class GithubStatusChecks
   end
 end
 
-
 $stdout.sync = true
 
 puts "Checking build status..."

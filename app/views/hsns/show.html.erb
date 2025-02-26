@@ -1,0 +1,18 @@
+<h1 class="patient-title">HSN Details</h1>
+
+<div class="patient-details">
+  <div class="patient-info">
+    <p><strong>Schedule:</strong> <%= @hsn.schedule %> </p>
+    <p><strong>S No:</strong> <%= @hsn.s_no %> </p>
+    <p><strong>Code:</strong> <%= @hsn.code %> </p>
+    <p><strong>Description:</strong> <%= @hsn.description %> </p>
+    <p><strong>CGST:</strong> <%= @hsn.cgst %> </p>
+    <p><strong>SGST:</strong> <%= @hsn.sgst %> </p>
+    <p><strong>GST:</strong> <%= @hsn.gst %> </p>
+  </div>
+
+  <div class="patient-actions">
+    <%= link_to 'Edit', edit_hsn_path(@hsn), class: 'btn btn-warning' %>
+    <%= link_to 'Back to List', hsns_path, class: 'btn btn-secondary' %>
+  </div>
+</div>

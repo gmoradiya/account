@@ -1,0 +1,127 @@
+<div class="invoice-container" id='invoiceContainer'>
+  <div class="invoice-header">
+    <%= organization.name %><br>
+    <%= organization.full_address.gsub("\n", "<br>").html_safe %><br>
+    Mob: <%= organization.phone_number %><br>
+    GSTIN: <%= organization.gst_detail %>J<br>
+  </div>
+
+  <table class="invoice-details">
+    <tr>
+      <td>
+      <strong>Billed To (Customer):</strong></br>
+      <p> <%= @sales_return_invoice.customer.name %></p>
+      <p> <%= @sales_return_invoice.billing_address.to_s.gsub("\n", "<br>").html_safe %></p>
+      <p><strong>Mobile:</strong> <%= @sales_return_invoice.customer.phone_number %> </p>
+      <p><strong>GSTIN:</strong> <%= @sales_return_invoice.customer.gst_detail %> </p>
+
+      </td>
+      <td>
+        <strong>Delivery Address:</strong><br>
+        <p> <%= @sales_return_invoice.customer.name %></p>
+        <p> <%= @sales_return_invoice.delivery_address.to_s.gsub("\n", "<br>").html_safe %></p>
+        <p><strong>Mobile:</strong> <%= @sales_return_invoice.customer.phone_number %> </p>
+        <p><strong>GSTIN:</strong> <%= @sales_return_invoice.customer.gst_detail %> </p>
+      </td>
+
+      <td>
+        <p><strong>Invoice No:</strong> <%= @sales_return_invoice.bill_no %>  </p>
+        <p><strong>Invoice Date:</strong>  <%= @sales_return_invoice.date %> </p>
+        <p><strong>Challan No:</strong></p>
+        <p><strong>Challan Date:</strong></p>
+        <p><strong>Place of Supply:</strong><%= @sales_return_invoice&.customer&.billing_address&.state&.gst_code%></p>
+      </td>
+    </tr>
+  </table>
+
+  <table class="invoice-details product">
+    <thead>
+      <tr>
+        <th>S.No.</th>
+        <th>Chln</th>
+        <th>Del. Chl. No</th>
+        <th>Product / Service</th>
+        <th>SAC Code</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>CGST</th>
+        <th>SGST</th>
+        <th>Discount</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sales_return_invoice.sales_return_inventories.each_with_index do |sales_return_inventory, ind| %>
+        <tr>
+          <td><%= ind + 1 %></td>
+          <td><%#= sales_return_inventory.invoiceable_type == 'PurchaseReturnInventory' ? sales_return_inventory.invoiceable.purchase_invoice.bill_no : sales_return_inventory.invoiceable.job_invoice.bill_no %></td>
+          <td><%=  %></td>
+          <td><%= sales_return_inventory.product.name %></td>
+          <td><%= sales_return_inventory.product&.hsn&.code %></td>
+          <td><%= sales_return_inventory.quantity %></td>
+          <td><%= sales_return_inventory.price %></td>
+          <td><%= sales_return_inventory.cgst %></td>
+          <td><%= sales_return_inventory.sgst %></td>
+          <td><%= sales_return_inventory.discount %></td>
+          <td><%= sales_return_inventory.sub_total %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <table class="invoice-details">
+    <tr>
+      <td>
+        <strong>Bank Details:</strong><br>
+        Name: <%=organization.bank_name%>.<br>
+        A/c No: <%= organization.account_number%><br>
+        IFSC Code: <%= organization.ifcs_code %><br>
+        Branch: <%= organization.branch %>
+      </td>
+      <td>
+        <p><strong>CGST:</strong> <%= @sales_return_invoice.cgst %> </p>
+        <p><strong>SGST:</strong> <%= @sales_return_invoice.sgst %> </p>
+        <p><strong>Discount: </strong>  <%= @sales_return_invoice.discount %></p>
+        <p><strong>Net Amount:</strong> <%= @sales_return_invoice.grand_total %></p>
+      </td>
+    </tr>
+  </table>
+
+  <p><strong>Payment within: </strong> <span class="highlight">7 Days</span> <strong>Due Date:</strong> 22-06-23</p>
+  <hr/>
+  <p><strong>Rupees:</strong> <%= indian_currency_in_words(@sales_return_invoice.sales_return_inventories.sum(&:sub_total))%></p>
+  <hr/>
+
+  <p><strong>Terms & Conditions:</strong></p>
+  <ul>
+    <li>Any claim or disputes arising from change in quality or shortage in quantity or any cost whatsoever will not be entertained once the goods are delivered.</li>
+    <li>All payments should be on or before the due date.</li>
+    <li>Beyond due date, an interest of 18% will be charged on the amount of the bill after the due date.</li>
+    <li>We are not responsible for any loss or damage during transit.</li>
+    <li>Payment to be made by Payees A/c Cheque, Draft or NEFT/IMPS/RTGS only.</li>
+  </ul>
+
+  <p>For <%= organization.name %></p>
+  <p><strong>Received By:</strong> _________________________ <strong>Prepared By:</strong>_________________________ <strong>Authorized Signatory:</strong> _________________________</p>
+</div>
+
+<button onclick="printInvoice()">Print</button>
+
+<script>
+
+  function printInvoice() {
+    var divContents = document.getElementById("invoiceContainer").innerHTML; // Get content from the div
+    var printWindow = window.open('', '', 'height=600,width=800'); // Open a new window
+
+    // Set up the content of the new window
+    printWindow.document.write('<html><head><title>Print</title>');
+    printWindow.document.write('<link rel="stylesheet" href="<%=asset_url('application.css') %>" type="text/css" />'); 
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(divContents);
+    printWindow.document.write('</body></html>');
+
+    printWindow.document.close(); // Close the document for printing
+    printWindow.print(); // Trigger the print dialog
+}
+
+</script>

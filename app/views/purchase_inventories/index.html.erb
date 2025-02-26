@@ -1,0 +1,40 @@
+<center><h1>Purchase Inventories</h1>
+
+<%= link_to 'Product page', product_path(@product), class: 'btn btn-primary mb-10' %>
+</center>
+
+<div class="patient-table">
+
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+
+        <th>Product Name</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @purchase_inventories.each_with_index do |purchase_inventory, ind| %>
+        <tr>
+          <td><%= ind + 1 %></td>
+          <td><%= purchase_inventory.product.name %></td>
+          <td><%= purchase_inventory.quantity %></td>
+          <td><%= purchase_inventory.price %></td>
+          <td><%= purchase_inventory.created_at %></td>
+          <td>
+            <%= link_to 'Edit', edit_product_purchase_inventory_path(@product, purchase_inventory), class: 'btn btn-edit' %>
+            <%= link_to 'Delete', product_purchase_inventory_path(@product, purchase_inventory), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <%= paginate @purchase_inventories %>
+</div>

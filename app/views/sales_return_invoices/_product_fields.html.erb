@@ -1,0 +1,136 @@
+<tr class="product-fields">
+  <%= f.hidden_field :id, class: 'id' %> <%# Ensure ID is included for existing records %>
+  <td>
+    <%= f.select :product_id, Product.where(id: f&.object&.product_id).collect { |p| [p.name, p.id] }, { include_blank: 'Select Product', selected: f&.object&.product_id }, class: 'input-field product searchable-select', id: "" %>
+  </td>
+  <td>
+    <%= f.number_field :price, step: "any", required: true, class: "price input-field" %>
+  </td>
+
+  <td>
+    <%= f.number_field :quantity, step: "any", required: true, class: "quantity input-field" %>
+  </td>
+  <td>
+    <%= f.number_field :total, step: "any", disabled: true, required: true, class: "total input-field" %>
+  </td>
+  <td>
+    <%= f.number_field :cgst_percentage, step: "any", class: "cgst_percentage input-field" %>
+  </td>
+  <td>
+    <%= f.number_field :cgst, step: "any", disabled: true, class: "cgst input-field" %>
+  </td>
+  <td>
+    <%= f.number_field :sgst_percentage, step: "any", class: "sgst_percentage input-field" %>
+  </td>
+  <td>
+    <%= f.number_field :sgst, step: "any", disabled: true, class: "sgst input-field" %>
+  </td>
+  <td>
+    <%= f.number_field :discount_percentage, step: "any", class: "discount_percentage input-field" %>
+  </td>
+  <td>
+    <%= f.number_field :discount, step: "any", disabled: true, class: "discount input-field" %>
+  </td>
+  <td>
+    <%= f.number_field :sub_total, step: "any", disabled: true, required: true, class: "sub_total input-field" %>
+  </td>
+  <td>
+    <% if f.object.persisted? %>
+      <%= f.check_box :_destroy %> Remove
+    <% else %>
+      <button type="button" class="remove-product">Remove</button>
+    <% end %>
+  </td>
+</tr>
+
+<script>
+  function updateTotal(row) {
+    let price = parseFloat(row.querySelector(".price").value) || 0;
+    let quantity = parseFloat(row.querySelector(".quantity").value) || 0;
+    let totalField = row.querySelector(".total");
+    totalField.value = (price * quantity).toFixed(2);
+    updateGrandTotal(row)
+  }
+
+  function updateCGST(row) {
+    let total = parseFloat(row.querySelector(".total").value) || 0;
+    let cgst_percentage = parseFloat(row.querySelector(".cgst_percentage").value) || 0;
+    let cgstField = row.querySelector(".cgst");
+    cgstField.value = (total * cgst_percentage / 100.0).toFixed(2);
+    updateGrandTotal(row)
+  }
+
+  function updateSGST(row) {
+    let total = parseFloat(row.querySelector(".total").value) || 0;
+    let sgst_percentage = parseFloat(row.querySelector(".sgst_percentage").value) || 0;
+    let sgstField = row.querySelector(".sgst");
+    sgstField.value = (total * sgst_percentage / 100.0).toFixed(2);
+    updateGrandTotal(row)
+  }
+
+  function updateDiscount(row) {
+    let total = parseFloat(row.querySelector(".total").value) || 0;
+    let sgst = parseFloat(row.querySelector(".sgst").value) || 0;
+    let cgst = parseFloat(row.querySelector(".cgst").value) || 0;
+
+    let discount_percentage = parseFloat(row.querySelector(".discount_percentage").value) || 0;
+    let discountField = row.querySelector(".discount");
+    discountField.value = ((total + sgst + cgst) * discount_percentage / 100.0).toFixed(2);
+    updateGrandTotal(row)
+  }
+
+  function updateGrandTotal(row) {
+    let total = parseFloat(row.querySelector(".total").value) || 0;
+    let sgst = parseFloat(row.querySelector(".sgst").value) || 0;
+    let cgst = parseFloat(row.querySelector(".cgst").value) || 0;
+    let discount = parseFloat(row.querySelector(".discount").value) || 0;
+
+    let subTotalField = row.querySelector(".sub_total");
+    subTotalField.value = (total + sgst + cgst - discount).toFixed(2);
+  }
+
+  function updateField(row) {
+    updateTotal(row)
+    updateCGST(row)
+    updateSGST(row)
+    updateDiscount(row);
+    updateGrandTotal(row);
+  }
+
+  document.addEventListener("click", function(event) {
+    if (event.target.classList.contains("remove-product")) {
+      event.target.closest(".product-fields").remove();
+    }
+  });
+
+  document.addEventListener("input", function (event) {
+    if (event.target.classList.contains("quantity") || event.target.classList.contains("price")) {
+      let row = event.target.closest(".product-fields");
+      updateField(row);
+      updateTotal(row);
+      updateCGST(row);
+      updateSGST(row);
+      updateDiscount(row);
+    }
+  });
+
+  document.addEventListener("input", function (event) {
+    if (event.target.classList.contains("sgst_percentage") ) {
+      let row = event.target.closest(".product-fields");
+      updateSGST(row);
+    }
+  });
+  document.addEventListener("input", function (event) {
+    if ( event.target.classList.contains("cgst_percentage")) {
+      let row = event.target.closest(".product-fields");
+      updateCGST(row);
+    }
+  });
+
+  document.addEventListener("input", function (event) {
+    if ( event.target.classList.contains("discount_percentage")) {
+      let row = event.target.closest(".product-fields");
+      updateDiscount(row);
+    }
+  });
+</script>

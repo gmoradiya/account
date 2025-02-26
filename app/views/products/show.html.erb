@@ -1,0 +1,65 @@
+<h1 class="patient-title">Product Details</h1>
+
+<div class="patient-details">
+  <div class="patient-info">
+    <p><strong>Name:</strong> <%= @product.name %> </p>
+    <p><strong>Description:</strong> <%= @product.description %> </p>
+    <p><strong>HSN Code:</strong> <%= @product&.hsn&.code %> </p>
+    <p><strong>Price:</strong> <%= @product.price %> </p>
+    <p><strong>Quantity:</strong> <%= @product.quantity %> </p>
+  </div>
+
+  <div class="patient-actions">
+    <%= link_to 'Edit', edit_product_path(@product), class: 'btn btn-warning' %>
+    <%= link_to 'Inventory Report', product_purchase_inventories_path(@product), class: 'btn btn-info' %>
+
+    <%= link_to 'Back to List', products_path, class: 'btn btn-secondary' %>
+  </div>
+</div>
+
+<center><h3>Inventory Reports </h3></center>
+<div class="patient-details">
+  <div class="patient-table">
+    <table>
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Date</th>
+          <th>Invoice Number</th>
+          <th>Type</th>
+          <th>Supplier/Customer Name</th>
+          <th>Quantity</th>
+          <th>Available Quantity</th>
+
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% total =0 %>
+        <% @inventories.each_with_index do |inventory, ind| %>
+          <% if inventory['inventory_type'] == 'sales' %>
+            <% total = total - inventory['quantity']  %>
+          <% else %>
+            <% total = total + inventory['quantity'] %>
+          <%end%>
+          <tr>
+            
+            <td><%= ind + 1 %></td>
+            <td><%= inventory['date'] %></td>
+            <td><%= inventory['bill_no'] %></td>
+            <td><%= inventory['inventory_type'] %></td>
+            <td><%= inventory['party_name'] %></td>
+            <td><%=  '- ' if ['sales', 'purchase_return'].include?inventory['inventory_type'] %><%= inventory['quantity'] %></td>
+            <td><%= total %></td>
+
+            <td>
+              <%#= link_to 'View', product_purchase_inventory_path(@product, purchase_inventory), class: 'btn btn-view' %>
+              <%#= link_to 'Edit', edit_product_purchase_inventory_path(@product, purchase_inventory), class: 'btn btn-edit' %>
+              <%#= link_to 'Delete', product_purchase_inventory_path(@product, purchase_inventory), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

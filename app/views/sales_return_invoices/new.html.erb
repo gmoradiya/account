@@ -1,0 +1,37 @@
+<div class='switch-container'>
+  <div class= 'page-header'>New Sales Return Invoice</div>
+  <label class="switch">
+    <%= check_box_tag :invoice_type %>
+    <span class="slider round"></span>
+  </label>  Job Work Invoice
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <label class="switch">
+    <%= check_box_tag :bill_types %>
+    <span class="slider round"></span>
+  </label>  With Out GST 
+</div>
+
+<div class='invoice'>
+    <%= render 'form', sales_return_invoice: @sales_return_invoice %>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    $(document).on('click', '#close-popup', function () {
+      $('#popup-overlay').fadeOut(function () {
+        $(this).remove();
+      });
+    });
+    $("#invoice_type").on('change', function(){
+      $(".invoiceable_type").val($("#invoice_type:checked").length == 1 ? 'JobInventory' : 'PurchaseInventory');
+    }); 
+
+    $("#bill_types").on('change', function(){
+      $(".bill_type").val($("#bill_types:checked").length == 1 ? 'without_gst' : 'with_gst');
+      $('.cgst').val(0);
+      $('.sgst').val(0);
+      $('.cgst_percentage').val(0);
+      $('.sgst_percentage').val(0);
+    });
+  });
+</script>

@@ -1,0 +1,49 @@
+<center><h1>Customers</h1>
+
+<%= link_to 'New Customer', new_customer_path, class: 'btn btn-primary mb-10' %>
+</center>
+<div class="search-bar">
+  <%= form_with url: customers_path, method: :get, local: true do %>
+    <input type="text" name="query" placeholder="Search by Name or Phone Number" value="<%= params[:query] %>" class="input-field">
+    <button type="submit">Search</button>
+  <% end %>
+</div>
+
+<div class="patient-table">
+
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Name</th>
+        <th>Owner Name</th>
+        <th>Phone Number</th>
+        <th>Alternate Phone Number</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @customers.each_with_index do |customer, ind| %>
+        <tr>
+          <td><%= ind + 1 %></td>
+          <td><%= customer.name %></td>
+          <td><%= customer.owner_name %></td>
+          <td><%= customer.phone_number %></td>
+          <td><%= customer.alternate_phone_number %></td>
+          <td><%= customer.email %></td>
+          <td>
+            <%= link_to 'View', customer_path(customer), class: 'btn btn-view' %>
+            <%= link_to 'Edit', edit_customer_path(customer), class: 'btn btn-edit' %>
+            <%= link_to 'Delete', customer_path(customer), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
+
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <%= paginate @customers %>
+</div>
