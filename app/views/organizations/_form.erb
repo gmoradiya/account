@@ -1,9 +1,9 @@
-<%= form_with(model: @organization, local: true) do |form| %>
-  <% if org.errors.any? %>
+<%= form_with(model: organization, local: true) do |form| %>
+  <% if organization.errors.any? %>
     <div class="errors">
-      <h2><%= pluralize(org.errors.count, "error") %> prohibited this organization from being saved:</h2>
+      <h2><%= pluralize(organization.errors.count, "error") %> prohibited this organization from being saved:</h2>
       <ul>
-        <% org.errors.full_messages.each do |message| %>
+        <% organization.errors.full_messages.each do |message| %>
           <li><%= message %></li>
         <% end %>
       </ul>
@@ -45,6 +45,17 @@
     <%= form.label :branch, class: 'label' %>
     <%= form.text_field :branch, class: 'input-field' %>
   </div>
+
+  <div class="form-group">
+  <%= form.label :country_id, class: 'label' %>
+  <%= form.select :country_id, Country.pluck(:name, :id), {selected: form.object.country_id || default_country&.id }, {class: "input-field", id: 'delivery_address_country'} %>
+</div>
+
+<div class="form-group">
+  <%= form.label :state_id, class: 'label' %>
+  <%= form.select :state_id, State.pluck(:name, :id), {selected: form.object.state_id || default_state&.id}, {class: "input-field", id: 'delivery_address_state'} %>
+</div>
+
 
   <div class="form-group">
     <%= form.submit 'Save', class: 'btn btn-primary' %>

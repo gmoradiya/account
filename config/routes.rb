@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
-  devise_for :users
   root "displays#index"
+
+  devise_for :users, controllers: { registrations: 'registrations', passwords: "passwords" }
+
   resources :users, except: [ :create ] do
     collection do
       get :search
@@ -89,7 +91,16 @@ Rails.application.routes.draw do
 
   resources :job_invoices
 
-  resources :organizations
+  resources :organizations do
+    member do
+      post 'invite_user'
+      get 'accept_invitation/:token', to: 'organizations#accept_invitation', as: 'accept_invitation'
+    end
+  
+    delete 'remove_user/', to: 'organizations#remove_user', as: 'remove_user'
+  end
+  
+  
   resources :payments
 
   # get "daily_appointments" => "displays#daily_appointment"

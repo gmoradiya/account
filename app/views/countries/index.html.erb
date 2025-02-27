@@ -29,7 +29,7 @@
           <td>
             <%= link_to 'View', country_path(country), class: 'btn btn-view' %>
             <%= link_to 'Edit', edit_country_path(country), class: 'btn btn-edit' %>
-            <%= link_to 'Delete', country_path(country), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
+            <%= link_to 'Delete', country_path(country), data: { confirm: 'Are you sure?', method: :delete }, class: 'btn btn-delete' %>
           </td>
         </tr>
       <% end %>

@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   before_action :check_admin_role
 
   def index
-    @users = organization.users.where.not(role: "super_admin")
+    @users = organization.users
 
     if params[:query].present?
       @users = @users.where("name LIKE ? OR email LIKE ? ", "%#{params[:query]}%", "%#{params[:query]}%")
@@ -22,7 +22,7 @@ class UsersController < ApplicationController
   def create_user
     @user = User.new(user_params)
     if @user.save
-      @user.update(organization: organization)
+      # @user.
       redirect_to @user, notice: "User was successfully created."
     else
       render :new
@@ -61,6 +61,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :role, :is_active)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :is_active)
   end
 end

@@ -248,13 +248,15 @@ organization = Organization.create(
   ifcs_code: "PMEC0100304",
   branch: "KATARGAM",
   country: country,
-  state: state,
-  financial_year: default_financial_year
+  state: state
 )
 
+User.create!([
+  { name: "super_admin", email: "sadmin@gmail.com", password: "password", password_confirmation: "password" }
+])
+
 users = User.create!([
-  { name: "super_admin", email: "sadmin@gmail.com", password: "password", password_confirmation: "password", role: "super_admin" },
-  { name: "admin", email: "admin@gmail.com", password: "password", password_confirmation: "password", role: "admin" }
+  { name: "admin", email: "admin@gmail.com", password: "password", password_confirmation: "password" }
   # { name: "staff 1", email: "staff1@gmail.com", password: "password", password_confirmation: "password", role: "staff" },
   # { name: "staff 2", email: "staff2@gmail.com", password: "password", password_confirmation: "password", role: "staff" },
   # { name: "recenptionist", email: "receptionist@gmail.com", password: "password", password_confirmation: "password", role: "receptionist" }
@@ -263,5 +265,5 @@ users = User.create!([
 
 
 users.each do |user|
-  UserOrganization.create(user: user, organization: organization)
+  UserOrganization.create(user: user, organization: organization, role: 'admin')
 end

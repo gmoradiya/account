@@ -42,7 +42,7 @@
           <td>
             <%= link_to 'View', hsn_path(hsn), class: 'btn btn-view' %>
             <%= link_to 'Edit', edit_hsn_path(hsn), class: 'btn btn-edit' %>
-            <%= link_to 'Delete', hsn_path(hsn), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
+            <%= link_to 'Delete', hsn_path(hsn), data: { confirm: 'Are you sure?', method: :delete }, class: 'btn btn-delete' %>
           </td>
         </tr>
       <% end %>

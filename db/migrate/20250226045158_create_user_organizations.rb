@@ -1,8 +1,10 @@
 class CreateUserOrganizations < ActiveRecord::Migration[8.0]
   def change
     create_table :user_organizations do |t|
-      t.references :user, null: false, foreign_key: true
-      t.references :organization, null: false, foreign_key: true
+      t.references :user, null: false
+      t.references :organization, null: false
+
+      t.string :role
 
       t.timestamps
     end
