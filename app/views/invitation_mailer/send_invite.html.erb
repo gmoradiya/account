@@ -1,0 +1,14 @@
+<p>Hello,</p>
+
+<p>You have been invited to join <strong><%= @organization.name %></strong>.</p>
+
+<% if @temporary_password.present? %>
+  <p>Your temporary password is: <strong><%= @temporary_password %></strong></p>
+  <p>Please log in and change your password.</p>
+<% end %>
+
+<p>Click the link below to accept the invitation:</p>
+
+<p><%= link_to 'Accept Invitation', @url %></p>
+
+<p>If you did not request this, please ignore this email.</p>

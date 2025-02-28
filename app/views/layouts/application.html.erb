@@ -41,7 +41,7 @@
             <%if current_user %>
               <%= form_with url: request.path, method: :get, local: true do %>
                 <label for="financial_year">Financial Year</label>
-                <%= select_tag :financial_year, options_for_select(financial_year_options, organization.financial_year), onchange: "this.form.submit();" %>
+                <%= select_tag :financial_year, options_for_select(financial_year_options, session[:financial_year]), onchange: "this.form.submit();" %>
               <% end %>
 
               <%= form_with url: request.path, method: :get, local: true do %>
@@ -65,7 +65,7 @@
                 <li class="navbar-item"><%= link_to 'Countries', countries_path, class: 'navbar-link' %></li>
                 <li class="navbar-item"><%= link_to 'States', states_path, class: 'navbar-link' %></li>
 
-                <%if ['admin', 'super_admin'].include?(current_user.role)%>
+                <%if current_user.organization_admin?(organization)%>
                   <li class="navbar-item"><%= link_to 'Users', users_path, class: 'navbar-link' %></li>
                 <%end%>
                 <li class="navbar-item"><%= link_to "Edit Profile", edit_user_registration_path, class: 'navbar-link' %></li>

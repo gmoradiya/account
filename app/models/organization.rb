@@ -10,6 +10,7 @@ class Organization < ApplicationRecord
   has_many :purchase_return_invoices
   has_many :job_invoices
   has_many :products
+  has_many :invitations
 
   has_many :user_organizations
   has_many :users, through: :user_organizations

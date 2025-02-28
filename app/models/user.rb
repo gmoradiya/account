@@ -5,7 +5,6 @@ class User < ApplicationRecord
   has_many :organizations, through: :user_organizations
   has_many :follow_ups
 
-
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
@@ -15,5 +14,18 @@ class User < ApplicationRecord
 
   def inactive_message
     is_active? ? super : :inactive_account
+  end
+
+  def organization_role(organization)
+    return false unless organization.persisted?
+    user_organizations.find_by(organization: organization).role
+  end
+
+  def organization_admin?(organization)
+    organization_role(organization) == 'admin'
+  end
+
+  def organization_staff?(organization)
+    organization_role(organization) == 'staff'
   end
 end

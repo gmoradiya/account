@@ -1,0 +1,63 @@
+<h1 class="patient-title">Organization Details</h1>
+
+<div class="patient-details">
+  <div class="patient-info">
+
+    <p><strong>Name:</strong> <%= @organization.name %> </p>
+    <p><strong>Address:</strong> <%= @organization.full_address.gsub('\n', "<br>").html_safe %> </p>
+    <p><strong>State:</strong> <%= @organization.state.name %> </p>
+    <p><strong>Country:</strong> <%= @organization.country.name %> </p>
+    <p><strong>Phone Number:</strong> <%= @organization.phone_number %> </p>
+    <p><strong>GST Details:</strong> <%= @organization.gst_detail %> </p>
+    <p><strong>Bank Name:</strong> <%= @organization.bank_name %> </p>
+    <p><strong>Account Number:</strong> <%= @organization.account_number %> </p>
+    
+  </div>
+
+  <div class="patient-actions">
+  <%if current_user.organization_admin?(organization) %>
+    <div class="patient-table">
+      <h3>Invite User by Email</h3>
+      <%= form_with url: invite_user_organization_path(@organization), method: :post, local: true do |form| %>
+        <div class="form-group">
+          <%= label_tag :email, "User Email" %>
+          <%= email_field_tag :email, nil, class: "form-control", required: true %>
+        </div>
+        <%= submit_tag "Send Invitation", class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  <% end %>
+
+    <%= link_to 'Edit', edit_organization_path(@organization), class: 'btn btn-warning' %>
+    <%= link_to 'Back to List', organizations_path, class: 'btn btn-secondary' %>
+  </div>
+
+
+</div>
+
+
+<h2>Users in Organization</h2>
+<div class="patient-table">
+
+  <table class="table">
+    <thead>
+        <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @organization.users.each do |user| %>
+        <tr>
+          <td><%= user.name %></td>
+          <td><%= user.email %></td>
+          <td>
+            <%= link_to 'Remove', organization_remove_user_path(@organization, user), method: :delete, class: 'btn btn-delete', data: { confirm: 'Are you sure?' } %>
+          </td>
+        </tr>
+        <% end %>
+    </tbody>
+  </table>
+</div>
+

@@ -3,12 +3,10 @@ class CountriesController < ApplicationController
   before_action :check_admin_staff_role
 
   def index
+    @countries = Country.all
     if params[:query].present?
       @countries = Country.where("name LIKE ? OR iso_code LIKE ? ", "%#{params[:query]}%", "%#{params[:query]}%")
-    else
-      @countries = Country.all
     end
-
     @countries = @countries.order(created_at: :desc).page(params[:page]).per(10) # Paginate results
   end
 

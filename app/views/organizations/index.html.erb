@@ -1,0 +1,41 @@
+<center><h1>Organization</h1>
+
+<%= link_to 'New organization', new_organization_path, class: 'btn btn-primary mb-10' %>
+</center>
+<div class="search-bar">
+  <%= form_with url: organizations_path, method: :get, local: true do %>
+    <input type="text" name="query" placeholder="Search by name" value="<%= params[:query] %>">
+    <button type="submit">Search</button>
+  <% end %>
+</div>
+
+<div class="patient-table">
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Organization Name</th>
+        <th>Phone number</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @organizations.each_with_index do |organization, ind| %>
+        <tr>
+          <td><%= ind + 1 %></td>
+          <td><%= organization.name %></td>
+          <td><%= organization.phone_number %></td>
+          <td>
+            <%= link_to 'View', organization_path(organization), class: 'btn btn-view' %>
+            <%= link_to 'Edit', edit_organization_path(organization), class: 'btn btn-edit' %>
+            <%= link_to 'Delete', organization_path(organization), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-delete' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <%= paginate @organizations %>
+</div>

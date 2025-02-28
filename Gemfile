@@ -11,8 +11,10 @@ gem "importmap-rails"
 gem "pry-rails"
 gem "pry-nav"
 gem "kaminari"
+
 gem "faker"
 gem "devise"
+gem "letter_opener"
 gem "importmap-rails"
 
 # Use the Puma web server [https://github.com/puma/puma]

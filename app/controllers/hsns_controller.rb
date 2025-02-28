@@ -7,12 +7,10 @@ class HsnsController < ApplicationController
   def index
     @hsns = Hsn.all
     if params[:query].present?
-      @hsns = Hsn.where("code LIKE ? OR description LIKE ?", "%#{params[:query]}%", "%#{params[:query]}%")
-    else
-      @hsns = Hsn.all
+      @hsns = @hsns.where("code LIKE ? OR description LIKE ?", "%#{params[:query]}%", "%#{params[:query]}%")
     end
 
-    @hsns = @hsns.page(params[:page]).per(10) # Paginate results
+    @hsns = @hsns.page(params[:page]).per(10) 
   end
 
   # GET /hsns/:id

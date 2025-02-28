@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_26_045158) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_27_072213) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -93,6 +93,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_26_045158) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "invitations", force: :cascade do |t|
+    t.string "email"
+    t.bigint "organization_id", null: false
+    t.string "token"
+    t.boolean "accepted"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_invitations_on_organization_id"
+  end
+
   create_table "job_inventories", force: :cascade do |t|
     t.bigint "job_invoice_id", null: false
     t.bigint "product_id", null: false
@@ -127,7 +137,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_26_045158) do
     t.string "account_number"
     t.string "ifcs_code"
     t.string "branch"
-    t.string "financial_year", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "country_id", null: false
@@ -368,6 +377,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_26_045158) do
   create_table "user_organizations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "organization_id", null: false
+    t.string "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["organization_id"], name: "index_user_organizations_on_organization_id"
@@ -391,6 +401,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_26_045158) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "user_organizations", "organizations"
-  add_foreign_key "user_organizations", "users"
+  add_foreign_key "invitations", "organizations"
 end

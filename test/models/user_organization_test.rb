@@ -1,6 +1,6 @@
 require "test_helper"
 
-class CreateUserOrganizationTest < ActiveSupport::TestCase
+class UserOrganizationTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
