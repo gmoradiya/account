@@ -28,14 +28,12 @@ class ApplicationController < ActionController::Base
 
   def set_financial_year_and_organization
     return if current_user.blank?
-    return if params[:controller] = 'organization' && (params[:action] == 'new' || params[:action] == 'create')
+    return if params[:controller] == 'organizations' && (params[:action] == 'new' || params[:action] == 'create')
     return redirect_to new_organization_path, alert: 'Organization required to proceed further.' if current_user.organizations.blank?
 
     if current_user.organizations.present?
       session[:organization_id] = params[:organization_id] if params[:organization_id].present? 
       session[:financial_year] =  params[:financial_year] if params[:financial_year].present?
-      # organization.update(financial_year: params[:financial_year]) if params[:financial_year].present?
-      # organization.save
     end
   end
 

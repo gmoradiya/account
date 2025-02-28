@@ -17,6 +17,7 @@ class User < ApplicationRecord
   end
 
   def organization_role(organization)
+    return false unless organization.persisted?
     user_organizations.find_by(organization: organization).role
   end
 
