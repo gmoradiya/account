@@ -1,5 +1,5 @@
 class InvitationMailer < ApplicationMailer
-  default from: 'no-reply@example.com'
+  default from: "no-reply@example.com"
 
   def send_invite(invitation, temporary_password = nil)
     @invitation = invitation

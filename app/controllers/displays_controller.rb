@@ -18,6 +18,8 @@ class DisplaysController < ApplicationController
 
     @gst_paid = (@purchase_invoices.sum(:cgst) +  @purchase_invoices.sum(:sgst)) - (@purchase_return_invoices.sum(:cgst) +  @purchase_return_invoices.sum(:sgst))
     @gst_received = (@sales_invoices.sum(:cgst) + @sales_invoices.sum(:sgst)) - (@sales_return_invoices.sum(:cgst) + @sales_return_invoices.sum(:sgst))
+    @pending_invitations = Invitation.where(email: current_user.email, accepted: false)
+
     # start_time = Date.today.beginning_of_day
     # end_time =  Date.today.end_of_day
     # if params[:date].present?

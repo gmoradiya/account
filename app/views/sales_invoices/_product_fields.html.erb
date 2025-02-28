@@ -11,10 +11,10 @@
     <%= f.number_field :quantity, step: "any", required: true, class: "quantity input-field" %>
   </td>
   <%if !f.object.persisted?%>
-  <td>
-    <%= f.select :invoiceable_id, {}, {}, {class: "invoiceable_id input-field searchable-select-invoiceable"} %>
-    <%= f.hidden_field :invoiceable_type, value: 'PurchaseInventory', class: 'invoiceable_type' %>
-  </td>
+    <td>
+      <%= f.select :invoiceable_id, {}, {}, {class: "invoiceable_id input-field searchable-select-invoiceable"} %>
+      <%= f.hidden_field :invoiceable_type, value: 'PurchaseInventory', class: 'invoiceable_type' %>
+    </td>
   <%end%>
   <td>
     <%= f.number_field :total, step: "any", disabled: true, required: true, class: "total input-field" %>

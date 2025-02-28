@@ -1,3 +1,15 @@
+<% if @pending_invitations.any? %>
+  <h3>Pending Invitations</h3>
+  <ul>
+    <% @pending_invitations.each do |invitation| %>
+      <li>
+        You have been invited to <strong><%= invitation.organization.name %></strong>.
+        <%= link_to "Accept Invitation", accept_invitation_organization_path(invitation.organization, token: invitation.token) %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
 
 <div class='display'>
 

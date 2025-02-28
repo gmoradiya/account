@@ -1,7 +1,7 @@
 class OrganizationsController < ApplicationController
   before_action :set_organization, only: %i[show edit update destroy info invite_user remove_user]
-  before_action :authenticate_user!, except: [:accept_invitation]
-  before_action :check_admin_role, except: [:index, :show, :accept_invitation, :create, :new]
+  before_action :authenticate_user!, except: [ :accept_invitation ]
+  before_action :check_admin_role, except: [ :index, :show, :accept_invitation, :create, :new ]
 
   def index
     @organizations = current_user.organizations
@@ -25,7 +25,7 @@ class OrganizationsController < ApplicationController
     end
     @organization = current_user.organizations.new(organization_params)
     if @organization.save
-      current_user.user_organizations.create(organization: @organization, role: 'admin')
+      current_user.user_organizations.create(organization: @organization, role: "admin")
       redirect_to @organization, notice: "Organization was successfully created."
     else
       render :new
@@ -51,7 +51,7 @@ class OrganizationsController < ApplicationController
   # def invite_user
   #   email = params[:email].downcase.strip
   #   user = User.find_by(email: email)
-  
+
   #   if user
   #     # If user exists, add them to the organization
   #     unless @organization.users.include?(user)
@@ -66,7 +66,7 @@ class OrganizationsController < ApplicationController
   #     InvitationMailer.send_invite(invitation).deliver_now
   #     flash[:notice] = "Invitation sent to #{email}."
   #   end
-  
+
   #   redirect_to @organization
   # end
 
@@ -91,8 +91,6 @@ class OrganizationsController < ApplicationController
     redirect_to @organization
   end
 
-
-  
   # app/controllers/organizations_controller.rb
   def accept_invitation
     invitation = Invitation.find_by(token: params[:token])
@@ -122,8 +120,6 @@ class OrganizationsController < ApplicationController
     end
   end
 
-  
-  
   def remove_user
     user = User.find(params[:user_id])
     if @organization.users.include?(user)
@@ -134,7 +130,7 @@ class OrganizationsController < ApplicationController
     end
     redirect_to @organization
   end
-  
+
   def search
     organizations = Organization.where("name iLIKE ?", "%#{params[:q]}%").first(5)
     render json: { organizations: organizations.map { |organization| { id: organization.id, name: "#{organization.name}"  } } }

@@ -10,7 +10,7 @@ class HsnsController < ApplicationController
       @hsns = @hsns.where("code LIKE ? OR description LIKE ?", "%#{params[:query]}%", "%#{params[:query]}%")
     end
 
-    @hsns = @hsns.page(params[:page]).per(10) 
+    @hsns = @hsns.page(params[:page]).per(10)
   end
 
   # GET /hsns/:id

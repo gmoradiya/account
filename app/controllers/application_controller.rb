@@ -2,14 +2,14 @@ class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
   helper_method :default_country, :organization, :financial_year_range, :financial_year_options, :session, :default_state
-  before_action :set_financial_year_and_organization
+  before_action :set_financial_year_and_organization, unless: :devise_controller?
 
   def check_admin_role
     redirect_to root_path, notice: "You are not allowed" if !current_user.organization_admin?(organization)
   end
 
   def check_admin_staff_role
-    redirect_to root_path, notice: "You are not allowed" if !(current_user.organization_admin?(organization) || current_user.organization_staff?(organization) )    
+    redirect_to root_path, notice: "You are not allowed" if !(current_user.organization_admin?(organization) || current_user.organization_staff?(organization))
   end
 
   def default_country
@@ -28,11 +28,11 @@ class ApplicationController < ActionController::Base
 
   def set_financial_year_and_organization
     return if current_user.blank?
-    return if params[:controller] == 'organizations' && (params[:action] == 'new' || params[:action] == 'create')
-    return redirect_to new_organization_path, alert: 'Organization required to proceed further.' if current_user.organizations.blank?
+    return if params[:controller] == "organizations" && (params[:action] == "new" || params[:action] == "create")
+    return redirect_to new_organization_path, alert: "Organization required to proceed further." if current_user.organizations.blank?
 
     if current_user.organizations.present?
-      session[:organization_id] = params[:organization_id] if params[:organization_id].present? 
+      session[:organization_id] = params[:organization_id] if params[:organization_id].present?
       session[:financial_year] =  params[:financial_year] if params[:financial_year].present?
     end
   end

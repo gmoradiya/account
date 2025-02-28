@@ -102,10 +102,26 @@
       dataType: 'json',
       success: (data) => {
         priceField.value = data.price || 0.0;
+        quantityField.setAttribute("max", data.quantity);
         cgstPercentageField.value = (data.hsn && !billTypeField.checked) ? data.hsn.cgst : 0.0;
         sgstPercentageField.value = (data.hsn && !billTypeField.checked) ? data.hsn.sgst : 0.0;
         quantityField.focus();
         quantityField.select();
+        
+        quantityField.addEventListener("input", function() {
+          // Parse the input value to an integer
+          let value = parseInt(quantityField.value);
+      
+          // Check if the value exceeds the maximum limit
+          if (value > data.quantity) {
+            // Set a custom error message
+            quantityField.setCustomValidity(`The maximum quantity allowed is ${data.quantity}.`);
+          } else {
+            // Clear any existing custom error message
+            quantityField.setCustomValidity("");
+          }
+        });
+      
       },
       error: (xhr, status, error) => {
         console.error('Error fetching product:', error);
@@ -209,6 +225,7 @@
                 };
               })
             };
+
           }
         }
       });

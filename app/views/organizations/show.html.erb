@@ -44,6 +44,7 @@
         <tr>
         <th>Name</th>
         <th>Email</th>
+        <th>Role</th>
         <th>Actions</th>
         </tr>
     </thead>
@@ -52,6 +53,7 @@
         <tr>
           <td><%= user.name %></td>
           <td><%= user.email %></td>
+          <td><%= user.organization_role(@organization) %></td>
           <td>
             <%= link_to 'Remove', organization_remove_user_path(@organization, user), method: :delete, class: 'btn btn-delete', data: { confirm: 'Are you sure?' } %>
           </td>

@@ -22,10 +22,10 @@ class User < ApplicationRecord
   end
 
   def organization_admin?(organization)
-    organization_role(organization) == 'admin'
+    organization_role(organization) == "admin"
   end
 
   def organization_staff?(organization)
-    organization_role(organization) == 'staff'
+    organization_role(organization) == "staff"
   end
 end

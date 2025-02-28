@@ -5,6 +5,6 @@ class UserOrganization < ApplicationRecord
   before_create :add_role
 
   def add_role
-    role = 'staff'
+    self.role = "staff"
   end
 end
