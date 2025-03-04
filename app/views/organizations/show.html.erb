@@ -3,7 +3,7 @@
 <div class="patient-details">
   <div class="patient-info">
     <p><strong>Name:</strong> <%= @organization.name %> </p>
-    <p><strong>Address:</strong> <%= @organization.full_address.gsub("\n", "<br>").html_safe %> </p>
+    <p><strong>Address:</strong> <%= simple_format(@organization.full_address) %> </p>
     <p><strong>State:</strong> <%= @organization.state.name %> </p>
     <p><strong>Country:</strong> <%= @organization.country.name %> </p>
     <p><strong>Phone Number:</strong> <%= @organization.phone_number %> </p>

@@ -2,8 +2,8 @@
   <div class="invoice-header">
     
 
-    <%=  @purchase_return_invoice.supplier.name %><br>
-    <%=  @purchase_return_invoice&.supplier&.addresses&.first&.gsub("\n", "<br>")&.html_safe %><br>
+    <%= @purchase_return_invoice.supplier.name %><br>
+    <%= simple_format(@purchase_return_invoice&.supplier&.addresses&.first) %><br>
     Mob: <%=  @purchase_return_invoice.supplier.phone_number %><br>
     GSTIN: <%=  @purchase_return_invoice.supplier.gst_detail %>J<br>
   </div>

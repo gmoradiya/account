@@ -3,7 +3,7 @@
     
 
     <%=  @purchase_invoice.supplier.name %><br>
-    <%=  @purchase_invoice&.supplier&.addresses&.first&.gsub("\n", "<br>")&.html_safe %><br>
+    <%=  simple_format(@purchase_invoice&.supplier&.addresses&.first) %><br>
     Mob: <%=  @purchase_invoice.supplier.phone_number %><br>
     GSTIN: <%=  @purchase_invoice.supplier.gst_detail %>J<br>
   </div>
