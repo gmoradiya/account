@@ -152,14 +152,16 @@
 
   <div class='balance-details'>
     <center>
-      <h1>Gross Sales: <%= @gross_sales %> ₹.</h1>
-      <h1>Gross Purchase: <%= @gross_purchase %> ₹.</h1>
+      <h1> This will display all amount based on paid/unpaid invoices.</h1>
 
-      <h1>GST Paid From Purchase: <%= @gst_paid %> ₹.</h1>
-      <h1>GST Received From Sales: <%= @gst_received %> ₹.</h1>
-      <h1>GST credit: <%= @gst_paid - @gst_received %> ₹.</h1>
-      <h1>Balance After GST Calculation: <%= ((@amount["SalesInvoice"].to_f + @amount["PurchaseReturnInvoice"].to_f) - (@amount["PurchaseInvoice"].to_f + @amount["SalesReturnInvoice"].to_f )) + @gst_paid - @gst_received%>  ₹.</h1>
-      <h1>Balance: <%= ((@amount["SalesInvoice"].to_f + @amount["PurchaseReturnInvoice"].to_f) - (@amount["PurchaseInvoice"].to_f + @amount["SalesReturnInvoice"].to_f )) %> ₹.</h1>
+      <h2>Gross Sales: <%= @gross_sales %> ₹.</h2>
+      <h2>Gross Purchase: <%= @gross_purchase %> ₹.</h2>
+
+      <h2>GST Paid From Purchase: <%= @gst_paid %> ₹.</h2>
+      <h2>GST Received From Sales: <%= @gst_received %> ₹.</h2>
+      <h2>GST credit: <%= @gst_paid - @gst_received %> ₹.</h2>
+      <h2>Balance After GST Calculation: <%= ((@amount["SalesInvoice"].to_f + @amount["PurchaseReturnInvoice"].to_f) - (@amount["PurchaseInvoice"].to_f + @amount["SalesReturnInvoice"].to_f )) + @gst_paid - @gst_received%>  ₹.</h2>
+      <h2>Balance: <%= ((@amount["SalesInvoice"].to_f + @amount["PurchaseReturnInvoice"].to_f) - (@amount["PurchaseInvoice"].to_f + @amount["SalesReturnInvoice"].to_f )) %> ₹.</h2>
 
     </center>
   </div>

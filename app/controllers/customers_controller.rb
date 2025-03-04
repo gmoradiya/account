@@ -1,7 +1,7 @@
 class CustomersController < ApplicationController
   before_action :set_customer, only: %i[show edit update destroy info]
   before_action :authenticate_user!
-  # before_action :check_admin_role
+  before_action :check_admin_role
 
   def index
     @customers = Customer.where(organization: organization)

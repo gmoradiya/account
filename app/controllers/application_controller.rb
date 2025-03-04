@@ -21,8 +21,7 @@ class ApplicationController < ActionController::Base
   end
 
   def organization
-    return if current_user.nil?
-    return nil if current_user.organizations.blank?
+    return if current_user.nil? || current_user.organizations.blank?
     Organization.find_by(id: session[:organization_id]) || current_user&.organizations&.first
   end
 
