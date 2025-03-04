@@ -1,7 +1,7 @@
 <div class="invoice-container" id='invoiceContainer'>
   <div class="invoice-header">
     <%= organization.name %><br>
-    <%= organization.full_address.gsub('\n', "<br>").html_safe %><br>
+    <%= organization.full_address.gsub("\n", "<br>").html_safe %><br>
     Mob: <%= organization.phone_number %><br>
     GSTIN: <%= organization.gst_detail %>J<br>
   </div>
@@ -11,7 +11,7 @@
       <td>
       <strong>Billed To (Customer):</strong></br>
       <p> <%= @sales_invoice.customer.name %></p>
-      <p> <%= @sales_invoice.billing_address.to_s.gsub('\n', "<br>").html_safe %></p>
+      <p> <%= @sales_invoice.billing_address.to_s.gsub("\n", "<br>").html_safe %></p>
       <p><strong>Mobile:</strong> <%= @sales_invoice.customer.phone_number %> </p>
       <p><strong>GSTIN:</strong> <%= @sales_invoice.customer.gst_detail %> </p>
 
@@ -19,14 +19,14 @@
       <td>
         <strong>Delivery Address:</strong><br>
         <p> <%= @sales_invoice.customer.name %></p>
-        <p> <%= @sales_invoice.delivery_address.to_s.gsub('\n', "<br>").html_safe %></p>
+        <p> <%= @sales_invoice.delivery_address.to_s.gsub("\n", "<br>").html_safe %></p>
         <p><strong>Mobile:</strong> <%= @sales_invoice.customer.phone_number %> </p>
         <p><strong>GSTIN:</strong> <%= @sales_invoice.customer.gst_detail %> </p>
       </td>
 
       <td>
-        <p><strong>Invoice No:</strong> <%= @sales_invoice.bill_no %>  </p>
-        <p><strong>Invoice Date:</strong>  <%= @sales_invoice.date %> </p>
+        <p><strong>Invoice No:</strong> <%= @sales_invoice.bill_no %> </p>
+        <p><strong>Invoice Date:</strong> <%= @sales_invoice.date %> </p>
         <p><strong>Challan No:</strong></p>
         <p><strong>Challan Date:</strong></p>
         <p><strong>Place of Supply:</strong><%= @sales_invoice&.customer&.billing_address&.state&.gst_code%></p>

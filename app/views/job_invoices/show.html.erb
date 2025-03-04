@@ -3,7 +3,7 @@
     
 
     <%=  @job_invoice.customer.name %><br>
-    <%=  @job_invoice&.customer&.addresses&.first&.address&.gsub('\n', "<br>")&.html_safe %><br>
+    <%=  @job_invoice&.customer&.addresses&.first&.address&.gsub("\n", "<br>")&.html_safe %><br>
     Mob: <%=  @job_invoice.customer.phone_number %><br>
     GSTIN: <%=  @job_invoice.customer.gst_detail %>J<br>
   </div>
